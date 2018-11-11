@@ -605,6 +605,9 @@ ar71xx_board_detect() {
 	*"DB120 reference board")
 		name="db120"
 		;;
+	*"DCH-G020 Rev. A1")
+		name="dch-g020-a1"
+		;;
 	*"DGL-5500 rev. A1")
 		name="dgl-5500-a1"
 		;;

@@ -94,6 +94,7 @@ obj-$(CONFIG_ATH79_MACH_CR5000)			+= mach-cr5000.o
 obj-$(CONFIG_ATH79_MACH_DAP_1330_A1)		+= mach-dap-1330-a1.o
 obj-$(CONFIG_ATH79_MACH_DAP_2695_A1)		+= mach-dap-2695-a1.o
 obj-$(CONFIG_ATH79_MACH_DB120)			+= mach-db120.o
+obj-$(CONFIG_ATH79_MACH_DCH_G020_A1)		+= mach-dch-g020-a1.o
 obj-$(CONFIG_ATH79_MACH_DGL_5500_A1)		+= mach-dgl-5500-a1.o
 obj-$(CONFIG_ATH79_MACH_DHP_1565_A1)		+= mach-dhp-1565-a1.o
 obj-$(CONFIG_ATH79_MACH_DIR_505_A1)		+= mach-dir-505-a1.o

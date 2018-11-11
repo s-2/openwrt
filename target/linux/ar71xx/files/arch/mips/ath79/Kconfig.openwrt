@@ -2383,6 +2383,16 @@ config ATH79_MACH_DAP_2695_A1
 	select ATH79_DEV_WMAC
 	select ATH79_NVRAM
 
+config ATH79_MACH_DCH_G020_A1
+	bool "D-Link DCH-G020 rev. A1 support"
+	select SOC_QCA953X
+	select ATH79_DEV_ETH
+	select ATH79_DEV_GPIO_BUTTONS
+	select ATH79_DEV_LEDS_GPIO
+	select ATH79_DEV_M25P80
+	select ATH79_DEV_USB
+	select ATH79_DEV_WMAC
+
 config ATH79_MACH_TL_WPA8630
 	bool "TP-Link TL-WPA8630 support"
 	select SOC_QCA956X

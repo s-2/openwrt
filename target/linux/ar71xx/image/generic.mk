@@ -1234,6 +1234,16 @@ define Device/dap-2695-a1
 endef
 TARGET_DEVICES += dap-2695-a1
 
+define Device/dch-g020-a1
+  DEVICE_TITLE := D-Link DCH-G020 rev. A1
+  DEVICE_PACKAGES := kmod-gpio-pca953x kmod-i2c-gpio-custom kmod-usb-acm libopenzwave
+  BOARDNAME := DCH-G020-A1
+  IMAGES := sysupgrade.bin
+  IMAGE_SIZE := 14784k
+  MTDPARTS := spi0.0:64k(u-boot)ro,64k(art)ro,64k(mp)ro,64k(config)ro,64k(bootarg)ro,14784k(firmware),64k(log)ro,512k(mydlink)ro,512k(data1)ro,128k(data2)ro,64k(data3)ro
+endef
+TARGET_DEVICES += dch-g020-a1
+
 define Device/bhr-4grv2
   DEVICE_TITLE := Buffalo BHR-4GRV2
   BOARDNAME := BHR-4GRV2

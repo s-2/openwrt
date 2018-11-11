@@ -321,6 +321,10 @@ dap-2695-a1)
 	ucidef_set_led_default "diag" "DIAG" "d-link:red:power" "0"
 	ucidef_set_led_wlan "wlan2g" "WLAN 2.4 GHz" "d-link:green:wlan2g" "phy1tpt"
 	;;
+dch-g020-a1)
+	ucidef_set_led_default "power" "POWER" "d-link:green:power" "1"
+	ucidef_set_led_default "diag" "DIAG" "d-link:amber:power" "0"
+	;;
 dhp-1565-a1)
 	ucidef_set_led_switch "wan" "WAN" "d-link:green:planet" "switch0" "0x20"
 	;;

@@ -84,6 +84,7 @@ enum ath79_mach_type {
 	ATH79_MACH_DAP_1330_A1,			/* D-Link DAP-1330 rev. A1 */
 	ATH79_MACH_DAP_2695_A1,			/* D-Link DAP-2695 rev. A1 */
 	ATH79_MACH_DB120,			/* Atheros DB120 reference board */
+	ATH79_MACH_DCH_G020_A1,			/* D-Link DCH-G020 rev. A1 */
 	ATH79_MACH_DGL_5500_A1,			/* D-link DGL-5500 rev. A1 */
 	ATH79_MACH_DHP_1565_A1,			/* D-Link DHP-1565 rev. A1 */
 	ATH79_MACH_DIR_505_A1,			/* D-Link DIR-505 rev. A1 */
