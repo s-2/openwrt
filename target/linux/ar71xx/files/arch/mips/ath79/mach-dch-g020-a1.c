@@ -31,6 +31,7 @@
 #include "dev-gpio-buttons.h"
 #include "dev-leds-gpio.h"
 #include "dev-m25p80.h"
+#include "dev-usb.h"
 #include "dev-wmac.h"
 #include "machtypes.h"
 #include "nvram.h"
@@ -103,6 +104,8 @@ static void __init dch_g020_setup(void)
 	ath79_register_gpio_keys_polled(-1, DCH_G020_KEYS_POLL_INTERVAL,
 			ARRAY_SIZE(dch_g020_gpio_keys),
 			dch_g020_gpio_keys);
+
+	ath79_register_usb();
 
 	ath79_register_wmac(art + DCH_G020_WMAC_CALDATA_OFFSET, mac);
 
