@@ -21,6 +21,10 @@
  */
 
 #include <linux/gpio.h>
+#include <linux/i2c.h>
+#include <linux/i2c-algo-bit.h>
+#include <linux/i2c-gpio.h>
+#include <linux/platform_data/pca953x.h>
 #include <linux/platform_device.h>
 
 #include <asm/mach-ath79/ath79.h>
@@ -47,6 +51,21 @@
 
 #define DCH_G020_GPIO_BTN_WPS		3
 #define DCH_G020_GPIO_BTN_RESET     17
+
+#define DCH_G020_GPIO_I2C_SDA            0
+#define DCH_G020_GPIO_I2C_SCL            1
+
+#define DCH_G020_PCA9554_GPIO_BASE  32
+#define DCH_G020_PCA9554_GPIO_IO_0  (0 + DCH_G020_PCA9554_GPIO_BASE)
+#define DCH_G020_PCA9554_GPIO_ZWAVE  (1 + DCH_G020_PCA9554_GPIO_BASE)
+#define DCH_G020_PCA9554_GPIO_IO_2  (2 + DCH_G020_PCA9554_GPIO_BASE)
+#define DCH_G020_PCA9554_GPIO_USB_HUB_RESET  (3 + DCH_G020_PCA9554_GPIO_BASE)
+#define DCH_G020_PCA9554_GPIO_IO_4  (4 + DCH_G020_PCA9554_GPIO_BASE)
+#define DCH_G020_PCA9554_GPIO_IO_5  (5 + DCH_G020_PCA9554_GPIO_BASE)
+#define DCH_G020_PCA9554_GPIO_IO_6  (6 + DCH_G020_PCA9554_GPIO_BASE)
+#define DCH_G020_PCA9554_GPIO_IO_7  (7 + DCH_G020_PCA9554_GPIO_BASE)
+
+
 
 #define DCH_G020_KEYS_POLL_INTERVAL	20	/* msecs */
 #define DCH_G020_KEYS_DEBOUNCE_INTERVAL	(3 * DCH_G020_KEYS_POLL_INTERVAL)
@@ -88,6 +107,33 @@ static struct gpio_keys_button dch_g020_gpio_keys[] __initdata = {
 	}
 };
 
+
+static struct i2c_gpio_platform_data dch_g020_i2c_gpio_data = {
+	.sda_pin	= DCH_G020_GPIO_I2C_SDA,
+	.scl_pin	= DCH_G020_GPIO_I2C_SCL,
+	.udelay		= 10,
+};
+
+static struct platform_device dch_g020_i2c_device = {
+	.name	= "i2c-gpio",
+	.id	= 0,
+	.dev	= {
+		.platform_data = &dch_g020_i2c_gpio_data,
+	},
+};
+
+static struct pca953x_platform_data dch_g020_pca9554_data = {
+	.gpio_base	= DCH_G020_PCA9554_GPIO_BASE,
+	.irq_base	= -1,
+};
+
+static struct i2c_board_info dch_g020_i2c_devs[] __initdata = {
+	{
+		I2C_BOARD_INFO("pca9554a", 0x38),
+		.platform_data = &dch_g020_pca9554_data,
+	},
+};
+
 static void __init dch_g020_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(DCH_G020_WMAC_CALDATA_ADDR);
@@ -98,12 +144,23 @@ static void __init dch_g020_setup(void)
 
 	ath79_register_m25p80(NULL);
 
+	platform_device_register(&dch_g020_i2c_device);
+	i2c_register_board_info(0, dch_g020_i2c_devs,
+				ARRAY_SIZE(dch_g020_i2c_devs));
+
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(dch_g020_leds_gpio),
 		dch_g020_leds_gpio);
 
 	ath79_register_gpio_keys_polled(-1, DCH_G020_KEYS_POLL_INTERVAL,
 			ARRAY_SIZE(dch_g020_gpio_keys),
 			dch_g020_gpio_keys);
+
+	gpio_request_one(DCH_G020_PCA9554_GPIO_USB_HUB_RESET,
+			GPIOF_OUT_INIT_HIGH | GPIOF_EXPORT_DIR_FIXED,
+			"Enable USB Hub");
+	gpio_request_one(DCH_G020_PCA9554_GPIO_ZWAVE,
+			GPIOF_OUT_INIT_HIGH | GPIOF_EXPORT_DIR_FIXED,
+			"Enable Z-Wave");
 
 	ath79_register_usb();
 

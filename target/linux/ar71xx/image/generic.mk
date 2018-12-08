@@ -1236,7 +1236,7 @@ TARGET_DEVICES += dap-2695-a1
 
 define Device/dch-g020-a1
   DEVICE_TITLE := D-Link DCH-G020 rev. A1
-  DEVICE_PACKAGES := kmod-gpio-pca953x kmod-i2c-gpio-custom kmod-usb-acm libopenzwave
+  DEVICE_PACKAGES := kmod-gpio-pca953x kmod-i2c-gpio-custom kmod-usb2 kmod-usb-acm kmod-usb-core libopenzwave openzwave openzwave-config
   BOARDNAME := DCH-G020-A1
   IMAGES := sysupgrade.bin
   IMAGE_SIZE := 14784k
