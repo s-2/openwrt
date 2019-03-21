@@ -1207,6 +1207,17 @@ define Device/qihoo-c301
 endef
 TARGET_DEVICES += qihoo-c301
 
+define Device/dap-1320-a1
+  DEVICE_TITLE := D-Link DAP-1320 rev. A1
+  BOARDNAME := DAP-1320-A1
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin := append-kernel | pad-to $$$$(BLOCKSIZE) |	append-rootfs | pad-rootfs | append-metadata |\
+    check-size $$$$(IMAGE_SIZE) | append-string DB120AR9341-RP-120511-NA
+  IMAGE_SIZE := 5312k
+  MTDPARTS := spi0.0:64k(u-boot)ro,64k(nvram)ro,5312k(firmware),64k(LANG)ro,2624k(linux4b)ro,1920k@0x00610000(rootfsb)ro,64k(art)ro
+endef
+TARGET_DEVICES += dap-1320-a1
+
 define Device/dap-1330-a1
   DEVICE_TITLE := D-Link DAP-1330 rev. A1
   DEVICE_PACKAGES := rssileds

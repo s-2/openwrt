@@ -232,6 +232,7 @@ platform_check_image() {
 	cpe505n|\
 	cpe830|\
 	cpe870|\
+	dap-1320-a1|\
 	dap-1330-a1|\
 	dgl-5500-a1|\
 	dhp-1565-a1|\
