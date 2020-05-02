@@ -1,0 +1,212 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "qca953x.dtsi"
+
+/ {
+	compatible = "dlink,dch-g020-a1", "qca,qca9531";
+	model = "D-Link DCH-G020 A1";
+
+	aliases {
+		label-mac-device = &eth0;
+		led-boot = &power;
+		led-failsafe = &power;
+		led-running = &power;
+		led-upgrade = &power;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200n8";
+	};
+
+	i2c {
+		compatible = "i2c-gpio";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sda-gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
+		scl-gpios = <&gpio 1 GPIO_ACTIVE_HIGH>;
+
+		/* can be removed on 4.19 */
+		gpios = <&gpio 0 GPIO_ACTIVE_HIGH>,
+				<&gpio 1 GPIO_ACTIVE_HIGH>;
+
+		pca9554: pca9554@38 {
+			compatible = "nxp,pca9554";
+			reg = <0x38 0x1>;
+			#clock-cells = <0>;
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+
+		/* not yet supported by OpenWRT, included for completeness */
+		rtc: pt7c43390@30 {
+			compatible = "pericom,pt7c43390";
+			reg = <0x30 0x8>;
+		};
+	};
+
+	gpio-export {
+		compatible = "gpio-export";
+
+		usb_enable: usb_enable {
+			label = "pca9554:usb_enable";
+			gpio-export,name = "pca9554:usb_enable";
+			gpio-export,output = <0>;
+			gpios = <&pca9554 3 GPIO_ACTIVE_LOW>;
+		};
+
+		zwave_enable: zwave_enable {
+			label = "pca9554:zwave_enable";
+			gpio-export,name = "pca9554:zwave_enable";
+			gpio-export,output = <0>;
+			gpios = <&pca9554 1 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		wps {
+			label = "wps";
+			linux,code = <KEY_WPS_BUTTON>;
+			gpios = <&gpio 3 GPIO_ACTIVE_LOW>;
+		};
+
+		reset {
+			label = "reset";
+			linux,code = <KEY_RESTART>;
+			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		power: power {
+			label = "d-link:green:power";
+			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+		};
+
+		status {
+			label = "d-link:red:status";
+			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
+		};
+	};
+};
+
+&spi {
+	status = "okay";
+	num-cs = <1>;
+
+	flash@9f000000 {
+		compatible = "jedec,spi-nor";
+		reg = <0x0>;
+		spi-max-frequency = <25000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x10000>;
+				read-only;
+			};
+
+			art: partition@10000 {
+				label = "art";
+				reg = <0x10000 0x10000>;
+				read-only;
+			};
+
+			mp: partition@20000 {
+				label = "mp";
+				reg = <0x20000 0x10000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "config";
+				reg = <0x30000 0x10000>;
+				read-only;
+			};
+
+			partition@40000 {
+				label = "bootarg";
+				reg = <0x40000 0x10000>;
+				read-only;
+			};
+
+			partition@50000 {
+				label = "firmware";
+				reg = <0x50000 0xe70000>;
+				compatible = "denx,uimage";
+			};
+
+			partition@ec0000 {
+				label = "log";
+				reg = <0xec0000 0x10000>;
+				read-only;
+			};
+
+			partition@ed0000 {
+				label = "mydlink";
+				reg = <0xed0000 0x80000>;
+				read-only;
+			};
+
+			partition@f50000 {
+				label = "data1";
+				reg = <0xf50000 0x80000>;
+				read-only;
+			};
+
+			partition@fd0000 {
+				label = "data2";
+				reg = <0xfd0000 0x20000>;
+				read-only;
+			};
+
+			partition@ff0000 {
+				label = "data3";
+				reg = <0xff0000 0x10000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&uart {
+	status = "okay";
+};
+
+&usb0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	hub_port: port@1 {
+		reg = <1>;
+		#trigger-source-cells = <0>;
+	};
+};
+
+&usb_phy {
+	status = "okay";
+};
+
+&eth0 {
+	status = "okay";
+	mtd-mac-address-text = <&mp 0x1>; /* todo: currently ineffective; wait for dts binding */
+};
+
+&wmac {
+	status = "okay";
+	mtd-cal-data = <&art 0x1000>;
+	mtd-mac-address-text = <&mp 0x13>; /* todo: currently ineffective; wait for dts binding */
+};

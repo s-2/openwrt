@@ -43,6 +43,16 @@ define Build/add-elecom-factory-initramfs
   fi
 endef
 
+define Build/mkdapimg2
+  $(STAGING_DIR_HOST)/bin/mkdapimg2 \
+    -i $@ -o $@.new \
+    -s $(DAP_SIGNATURE) \
+    -v $(VERSION_DIST)-$(firstword $(subst +, ,$(firstword $(subst -, ,$(REVISION))))) \
+    -r Default \
+    $(if $(1),-k $(1))
+  mv $@.new $@
+endef
+
 define Build/nec-enc
   $(STAGING_DIR_HOST)/bin/nec-enc \
     -i $@ -o $@.new -k $(1)
@@ -252,6 +262,19 @@ define Device/devolo_dvl1750x
   IMAGE_SIZE := 15936k
 endef
 TARGET_DEVICES += devolo_dvl1750x
+
+define Device/dlink_dch-g020-a1
+  ATH_SOC := qca9531
+  DEVICE_TITLE := D-Link DCH-G020 rev. A1
+  DEVICE_PACKAGES := kmod-gpio-pca953x kmod-i2c-core kmod-i2c-gpio kmod-usb2 kmod-usb-acm kmod-usb-core libopenzwave openzwave openzwave-config
+  BOARDNAME := DCH-G020-A1
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE_SIZE := 14784k
+  IMAGE/factory.img := append-kernel | pad-to $$$$(BLOCKSIZE) | append-rootfs | pad-rootfs | check-size $$$$(IMAGE_SIZE) | mkdapimg2 0x20000
+  MTDPARTS := spi0.0:64k(u-boot)ro,64k(art)ro,64k(mp)ro,64k(config)ro,64k(bootarg)ro,14784k(firmware),64k(log)ro,512k(mydlink)ro,512k(data1)ro,128k(data2)ro,64k(data3)ro
+  DAP_SIGNATURE := HONEYBEE-FIRMWARE-DCH-G020
+endef
+TARGET_DEVICES += dlink_dch-g020-a1
 
 define Device/dlink_dir-825-b1
   ATH_SOC := ar7161
