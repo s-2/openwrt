@@ -49,6 +49,17 @@ define Build/cybertan-trx
 	-rm $@-empty.bin
 endef
 
+define Build/mkdapimg2
+	$(STAGING_DIR_HOST)/bin/mkdapimg2 \
+		-i $@ -o $@.new \
+		-s $(DAP_SIGNATURE) \
+		-v $(VERSION_DIST)-$(firstword $(subst +, , \
+			$(firstword $(subst -, ,$(REVISION))))) \
+		-r Default \
+		$(if $(1),-k $(1))
+	mv $@.new $@
+endef
+
 define Build/nec-enc
   $(STAGING_DIR_HOST)/bin/nec-enc \
     -i $@ -o $@.new -k $(1)
@@ -447,6 +458,32 @@ define Device/devolo_magic-2-wifi
   IMAGE_SIZE := 15872k
 endef
 TARGET_DEVICES += devolo_magic-2-wifi
+
+define Device/dlink_dap-13xx
+  SOC := qca9533
+  DEVICE_VENDOR := D-Link
+  DEVICE_VARIANT := A1
+  DEVICE_PACKAGES += rssileds
+  IMAGES += factory.bin
+  IMAGE_SIZE := 7936k
+  IMAGE/factory.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | check-size | mkdapimg2 0xE0000
+endef
+
+define Device/dlink_dap-1330-a1
+  $(Device/dlink_dap-13xx)
+  DEVICE_MODEL := DAP-1330
+  DAP_SIGNATURE := HONEYBEE-FIRMWARE-DAP-1330
+  SUPPORTED_DEVICES += dap-1330-a1
+endef
+TARGET_DEVICES += dlink_dap-1330-a1
+
+define Device/dlink_dap-1365-a1
+  $(Device/dlink_dap-13xx)
+  DEVICE_MODEL := DAP-1365
+  DAP_SIGNATURE := HONEYBEE-FIRMWARE-DAP-1365
+endef
+TARGET_DEVICES += dlink_dap-1365-a1
 
 define Device/dlink_dir-505
   SOC := ar9330

@@ -101,6 +101,14 @@ engenius,ecb1750)
 devolo,magic-2-wifi)
 	ucidef_set_led_netdev "plcw" "dLAN" "devolo:white:dlan" "eth0.1" "rx"
 	;;
+dlink,dap-1330-a1|\
+dlink,dap-1365-a1)
+	ucidef_set_rssimon "wlan0" "2000000" "2"
+	ucidef_set_led_rssi "wifi-low" "wifi-low" "d-link:red:wifi" "wlan0" "1" "29"
+	ucidef_set_led_rssi "wifi-medium" "wifi-medium" "d-link:green:wifi" "wlan0" "30" "100"
+	ucidef_set_led_rssi "wifi-high" "wifi-high" "d-link:green:signal1" "wlan0" "50" "100"
+	ucidef_set_led_rssi "wifi-max" "wifi-max" "d-link:green:signal2" "wlan0" "70" "100"
+	;;
 dlink,dir-842-c1|\
 dlink,dir-842-c2|\
 dlink,dir-842-c3|\
