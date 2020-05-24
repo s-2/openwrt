@@ -1,0 +1,113 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "qca953x.dtsi"
+
+/ {
+	aliases {
+		led-boot = &led_power;
+		led-failsafe = &led_status;
+		led-running = &led_power;
+		led-upgrade = &led_status;
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		wps {
+			label = "wps";
+			linux,code = <KEY_WPS_BUTTON>;
+			gpios = <&gpio 17 GPIO_ACTIVE_HIGH>;
+		};
+
+		reset {
+			label = "reset";
+			linux,code = <KEY_RESTART>;
+			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_power: power {
+			label = "green:power";
+			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		led_status: status {
+			label = "red:status";
+			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
+		};
+	};
+};
+
+&spi {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x10000>;
+				read-only;
+			};
+
+			partition@10000 {
+				label = "nvram";
+				reg = <0x10000 0x10000>;
+				read-only;
+			};
+
+			partition@20000 {
+				label = "firmware";
+				reg = <0x20000 0x540000>;
+				compatible = "denx,uimage";
+			};
+
+			partition@560000 {
+				label = "linux4b";
+				reg = <0x560000 0x290000>;
+				read-only;
+			};
+
+			partition@610000 {
+				label = "rootfsb";
+				reg = <0x610000 0x1e0000>;
+				read-only;
+			};
+
+			partition@7f0000 {
+				label = "art";
+				reg = <0x7f0000 0x10000>;
+				read-only;
+
+				compatible = "nvmem-cells";
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				cal_art_1000: cal@1000 {
+					reg = <0x1000 0x440>;
+				};
+			};
+		};
+	};
+};
+
+&wmac {
+	status = "okay";
+
+	nvmem-cells = <&cal_art_1000>;
+	nvmem-cell-names = "calibration";
+};

@@ -79,6 +79,13 @@ metadata_json = \
 		} \
 	}'
 
+define Build/append-md5sum-ascii-salted
+	cp $@ $@.salted
+	echo -ne $(1) >> $@.salted
+	$(STAGING_DIR_HOST)/bin/mkhash md5 $@.salted | xargs echo -ne >> $@
+	rm $@.salted
+endef
+
 define Build/append-metadata
 	$(if $(SUPPORTED_DEVICES),-echo $(call metadata_json) | fwtool -I - $@)
 	sha256sum "$@" | cut -d" " -f1 > "$@.sha256sum"

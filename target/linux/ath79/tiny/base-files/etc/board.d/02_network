@@ -120,10 +120,28 @@ ath79_setup_macs()
 	[ -n "$label_mac" ] && ucidef_set_label_macaddr $label_mac
 }
 
+ath79_setup_wireless()
+{
+	local board="$1"
+
+	case "$board" in
+	dlink,dap-1120-a1|\
+	dlink,dap-1320-a1|\
+	dlink,dap-1320-b1|\
+	dlink,dap-1320-c1)
+		ssid=$(dd if=$(find_mtd_part 'art') bs=1 skip=$((0xFFBC)) count=10 2>/dev/null)
+		key=$(dd if=$(find_mtd_part 'art') bs=1 skip=$((0xFFDD)) count=10 2>/dev/null)
+		ucidef_set_wireless $ssid psk2+aes $key
+		ucidef_enable_wireless 2g
+		;;
+	esac
+}
+
 board_config_update
 board=$(board_name)
 ath79_setup_interfaces $board
 ath79_setup_macs $board
+ath79_setup_wireless $board
 board_config_flush
 
 exit 0

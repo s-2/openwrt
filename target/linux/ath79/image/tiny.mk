@@ -12,6 +12,57 @@ define Device/buffalo_whr-g301n
 endef
 TARGET_DEVICES += buffalo_whr-g301n
 
+define Device/dlink_dap-1120-a1
+  $(Device/dlink_dap-1320)
+  SOC := qca9533
+  DEVICE_MODEL := DAP-1120
+  DEVICE_VARIANT := A1
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-string AP143AR953x-RP-150515-NA
+endef
+TARGET_DEVICES += dlink_dap-1120-a1
+
+define Device/dlink_dap-1320
+  DEVICE_VENDOR := D-Link
+  IMAGE_SIZE := 5376k
+  DEVICE_PACKAGES := -kmod-mdio -kmod-mii -luci-proto-ppp -ppp \
+	-ppp-mod-pppoe -swconfig
+  IMAGES += factory.bin
+  IMAGE/default := append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | check-size
+endef
+
+define Device/dlink_dap-1320-a1
+  $(Device/dlink_dap-1320)
+  SOC := ar9341
+  DEVICE_MODEL := DAP-1320
+  DEVICE_VARIANT := A1
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-string DB120AR9341-RP-120511-NA
+endef
+TARGET_DEVICES += dlink_dap-1320-a1
+
+define Device/dlink_dap-1320-b1
+  $(Device/dlink_dap-1320)
+  SOC := qca9533
+  DEVICE_MODEL := DAP-1320
+  DEVICE_VARIANT := B1
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-string AP143AR953x-AP-140102-NA
+endef
+TARGET_DEVICES += dlink_dap-1320-b1
+
+define Device/dlink_dap-1320-c1
+  $(Device/dlink_dap-1320)
+  SOC := qca9533
+  DEVICE_MODEL := DAP-1320
+  DEVICE_VARIANT := C1
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-md5sum-ascii-salted ffff | \
+	append-string AP143AR953x-RP-150525-NA
+endef
+TARGET_DEVICES += dlink_dap-1320-c1
+
 define Device/dlink_dir-615-e4
   SOC := ar7240
   DEVICE_VENDOR := D-Link

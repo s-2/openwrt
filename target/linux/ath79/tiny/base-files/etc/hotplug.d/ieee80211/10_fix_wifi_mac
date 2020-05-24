@@ -1,0 +1,24 @@
+#!/bin/ash
+
+[ "$ACTION" = "add" ] || exit 0
+
+PHYNBR=${DEVPATH##*/phy}
+
+[ -n $PHYNBR ] || exit 0
+
+. /lib/functions.sh
+. /lib/functions/system.sh
+. /lib/functions/uci-defaults.sh
+. /lib/functions/k2t.sh
+
+board=$(board_name)
+
+case "$board" in
+	dlink,dap-1120-a1|\
+	dlink,dap-1320-a1|\
+	dlink,dap-1320-b1|\
+	dlink,dap-1320-c1)
+		mtd_get_mac_text "art" 0xffa0 > /sys${DEVPATH}/macaddress
+		ucidef_set_label_macaddr $(mtd_get_mac_text "art" 0xffa0)
+		;;
+esac
