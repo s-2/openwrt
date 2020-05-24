@@ -1,6 +1,13 @@
 include ./common-buffalo.mk
 include ./common-senao.mk
 
+define Build/append-md5sum-ascii-salted
+	cp $@ $@.salted
+	echo -ne $(1) >> $@.salted
+	$(STAGING_DIR_HOST)/bin/mkhash md5 $@.salted | xargs echo -ne >> $@
+	rm $@.salted
+endef
+
 define Device/buffalo_whr-g301n
   $(Device/buffalo_common)
   SOC := ar7240
@@ -11,6 +18,55 @@ define Device/buffalo_whr-g301n
   DEFAULT := n
 endef
 TARGET_DEVICES += buffalo_whr-g301n
+
+define Device/dlink_dap-1120-a1
+  $(Device/dlink_dap-1320)
+  SOC := qca9533
+  DEVICE_MODEL := DAP-1120
+  DEVICE_VARIANT := A1
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-string AP143AR953x-RP-150515-NA
+endef
+TARGET_DEVICES += dlink_dap-1120-a1
+
+define Device/dlink_dap-1320
+  DEVICE_VENDOR := D-Link
+  IMAGE_SIZE := 5376k
+  IMAGES += factory.bin
+  IMAGE/default := append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | check-size
+endef
+
+define Device/dlink_dap-1320-ax
+  $(Device/dlink_dap-1320)
+  SOC := ar9341
+  DEVICE_MODEL := DAP-1320
+  DEVICE_VARIANT := Ax
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-string DB120AR9341-RP-120511-NA
+endef
+TARGET_DEVICES += dlink_dap-1320-ax
+
+define Device/dlink_dap-1320-bx
+  $(Device/dlink_dap-1320)
+  SOC := qca9533
+  DEVICE_MODEL := DAP-1320
+  DEVICE_VARIANT := Bx
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-string AP143AR953x-AP-140102-NA
+endef
+TARGET_DEVICES += dlink_dap-1320-bx
+
+define Device/dlink_dap-1320-cx
+  $(Device/dlink_dap-1320)
+  SOC := qca9533
+  DEVICE_MODEL := DAP-1320
+  DEVICE_VARIANT := Cx
+  IMAGE/factory.bin := $$(IMAGE/default) | \
+	append-md5sum-ascii-salted ffff | \
+	append-string AP143AR953x-RP-150525-NA
+endef
+TARGET_DEVICES += dlink_dap-1320-cx
 
 define Device/dlink_dir-615-e4
   SOC := ar7240
