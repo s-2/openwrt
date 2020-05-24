@@ -8,6 +8,7 @@ PHYNBR=${DEVPATH##*/phy}
 
 . /lib/functions.sh
 . /lib/functions/system.sh
+. /lib/functions/uci-defaults.sh
 . /lib/functions/k2t.sh
 
 board=$(board_name)
@@ -16,6 +17,13 @@ case "$board" in
 	adtran,bsap1800-v2|\
 	adtran,bsap1840)
 		macaddr_add "$(mtd_get_mac_binary 'Board data' 2)" $(($PHYNBR * 8 + 1)) > /sys${DEVPATH}/macaddress
+		;;
+	dlink,dap-1120-a1|\
+	dlink,dap-1320-ax|\
+	dlink,dap-1320-bx|\
+	dlink,dap-1320-cx)
+		mtd_get_mac_text "art" 0xffa0 > /sys${DEVPATH}/macaddress
+		ucidef_set_label_macaddr $(mtd_get_mac_text "art" 0xffa0)
 		;;
 	iodata,wn-ac1600dgr)
 		# There is no eeprom data for 5 GHz wlan in "art" partition
