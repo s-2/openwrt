@@ -35,6 +35,10 @@ define Build/addpattern
 	-mv "$@.new" "$@"
 endef
 
+define Build/alpha_encimg
+	$(TOPDIR)/scripts/alpha_encimg.py $@ $(1)
+endef
+
 define Build/append-md5sum-bin
 	$(STAGING_DIR_HOST)/bin/mkhash md5 $@ | sed 's/../\\\\x&/g' |\
 		xargs echo -ne >> $@
@@ -525,9 +529,10 @@ define Device/dlink_dir-842-c
   DEVICE_MODEL := DIR-842
   KERNEL := kernel-bin | append-dtb | relocate-kernel | lzma
   KERNEL_INITRAMFS := $$(KERNEL) | seama
-  IMAGES += factory.bin
   SEAMA_MTDBLOCK := 5
   SEAMA_SIGNATURE := wrgac65_dlink.2015_dir842
+  IMAGE_SIZE := 15680k
+  IMAGES += factory-recovery.bin factory-webflash.bin
   # 64 bytes offset:
   # - 28 bytes seama_header
   # - 36 bytes of META data (4-bytes aligned)
@@ -535,9 +540,11 @@ define Device/dlink_dir-842-c
 	pad-offset $$$$(BLOCKSIZE) 64 | append-rootfs
   IMAGE/sysupgrade.bin := $$(IMAGE/default) | seama | pad-rootfs | \
 	append-metadata | check-size
-  IMAGE/factory.bin := $$(IMAGE/default) | pad-rootfs -x 64 | seama | \
-	seama-seal | check-size
-  IMAGE_SIZE := 15680k
+  IMAGE/factory-recovery.bin := $$(IMAGE/default) | pad-rootfs -x 64 | \
+	seama | seama-seal | check-size
+  IMAGE/factory-webflash.bin := $$(IMAGE/factory-recovery.bin) | \
+	alpha_encimg $$(SEAMA_SIGNATURE) \
+	xQYoRZeD726UAbRb846kO7TeNw8eZa6u zufEbNF3kUafxFiE
 endef
 
 define Device/dlink_dir-842-c1
@@ -558,6 +565,11 @@ define Device/dlink_dir-842-c3
   $(Device/dlink_dir-842-c)
   DEVICE_VARIANT := C3
   DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct
+  # call seama-seal and alpha_encimg with different SEAMA_SIGNATURE
+  IMAGE/factory-webflash.bin := $$(IMAGE/default) | pad-rootfs -x 64 | \
+	seama | seama-seal $$(SEAMA_SIGNATURE)EU | check-size | \
+	alpha_encimg $$(SEAMA_SIGNATURE)EU \
+	xQYoRZeD726UAbRb846kO7TeNw8eZa6u zufEbNF3kUafxFiE
 endef
 TARGET_DEVICES += dlink_dir-842-c3
 
@@ -567,9 +579,17 @@ define Device/dlink_dir-859-a1
   DEVICE_VENDOR := D-Link
   DEVICE_MODEL := DIR-859
   DEVICE_VARIANT := A1
-  IMAGE_SIZE := 15872k
-  DEVICE_PACKAGES :=  kmod-usb2 kmod-ath10k-ct-smallbuffers ath10k-firmware-qca988x-ct
+  DEVICE_PACKAGES :=  kmod-usb2 kmod-ath10k-ct-smallbuffers \
+	ath10k-firmware-qca988x-ct
   SEAMA_SIGNATURE := wrgac37_dlink.2013gui_dir859
+  IMAGE_SIZE := 15872k
+  IMAGES += factory-recovery.bin factory-webflash.bin
+  IMAGE/factory.bin :=
+  IMAGE/factory-recovery.bin := $$(IMAGE/default) | pad-rootfs -x 64 | \
+	seama | seama-seal | check-size
+  IMAGE/factory-webflash.bin := $$(IMAGE/factory-recovery.bin) | \
+	alpha_encimg $$(SEAMA_SIGNATURE) \
+	KY0H9R2PDL3eu1J4uCVd1CK7BJ7vF1kc qbStAzIRvWeQHz5U
 endef
 TARGET_DEVICES += dlink_dir-859-a1
 
