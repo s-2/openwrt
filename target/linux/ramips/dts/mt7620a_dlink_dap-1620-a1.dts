@@ -1,0 +1,155 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+/dts-v1/;
+
+#include "mt7620a.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/ {
+	compatible = "dlink,dap-1620-a1", "ralink,mt7620a-soc";
+	model = "D-Link DAP-1620 A1";
+
+	aliases {
+		led-boot = &led_power;
+		led-failsafe = &led_power;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_power: power {
+			label = "dap-1620:green:power";
+			gpios = <&gpio2 13 GPIO_ACTIVE_LOW>;
+		};
+
+		lan {
+			label = "dap-1620:green:lan";
+			gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+		};
+	};
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&gpio2 {
+	status = "okay";
+};
+
+&gpio3 {
+	status = "okay";
+};
+
+&spi0 {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x30000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "u-boot-env";
+				reg = <0x30000 0x10000>;
+				read-only;
+			};
+
+			factory: partition@40000 {
+				label = "factory";
+				reg = <0x40000 0x10000>;
+				read-only;
+			};
+
+			partition@50000 {
+				label = "firmware";
+				reg = <0x50000 0x490000>;
+				compatible = "denx,uimage";
+			};
+
+			partition@4e0000 {
+				label = "lang";
+				reg = <0x4e0000 0x10000>;
+				read-only;
+			};
+
+			partition@4f0000 {
+				label = "linux4b";
+				reg = <0x4f0000 0xd0000>;
+				read-only;
+			};
+
+			partition@5c0000 {
+				label = "rootfsb";
+				reg = <0x5c0000 0x240000>;
+				read-only;
+			};
+		};
+	};
+};
+
+
+&state_default {
+	default {
+		groups = "ephy", "uartf", "spi refclk", "wled";
+		function = "gpio";
+	};
+};
+
+&pcie {
+	status = "okay";
+};
+
+&pcie0 {
+	wifi@0,0 {
+		reg = <0x0000 0 0 0 0>;
+		ieee80211-freq-limit = <5000000 6000000>;
+		mtd-mac-address = <&factory 0x0>;
+		mtd-mac-address-increment = <(2)>;
+
+		led {
+			led-sources = <2>;
+			led-active-low;
+		};
+	};
+};
+
+
+&ethernet {
+	mtd-mac-address = <&factory 0x4>;
+
+	port@0 {
+		phy-handle = <&phy0>;
+		phy-mode = "rgmii";
+	};
+
+	mdio-bus {
+		status = "okay";
+
+		phy0: ethernet-phy@0 {
+			reg = <0>;
+			phy-mode = "rgmii";
+		};
+	};
+};
+
+&wmac {
+	status = "okay";
+	ralink,mtd-eeprom = <&factory 0x0>;
+	ralink,5ghz = <0>;
+	mtd-mac-address = <&factory 0x4>;
+	mtd-mac-address-increment = <1>;
+};
