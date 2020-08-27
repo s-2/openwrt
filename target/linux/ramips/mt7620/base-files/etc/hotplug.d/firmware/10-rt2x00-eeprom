@@ -22,6 +22,9 @@ board=$(board_name)
 case "$FIRMWARE" in
 "soc_wmac.eeprom")
 	case $board in
+	dlink,dap-1620-a1)
+		wifi_mac=$(mtd_get_mac_text "factory" 0xffd4)
+		;;
 	dlink,dir-510l|\
 	dlink,dwr-116-a1|\
 	dlink,dwr-118-a1|\

@@ -276,6 +276,10 @@ ramips_setup_macs()
 	asus,rt-ac54u)
 		lan_mac=$(mtd_get_mac_binary factory 0x22)
 		;;
+	dlink,dap-1620-a1)
+		lan_mac=$(mtd_get_mac_text "factory" 0xffe8)
+		label_mac=lan_mac
+		;;
 	dlink,dch-m225)
 		lan_mac=$(mtd_get_mac_ascii factory lanmac)
 		;;
