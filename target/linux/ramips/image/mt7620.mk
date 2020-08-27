@@ -179,6 +179,10 @@ define Device/dlink_dap-1620-a1
   DEVICE_VARIANT := A1
   DEVICE_PACKAGES += kmod-mt76x2
   IMAGE_SIZE := 4672k
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(sysupgrade_bin) | \
+	append-md5sum-ascii-salted ffff | \
+	append-string MT76XMT7620-RP-150116-NA
 endef
 TARGET_DEVICES += dlink_dap-1620-a1
 

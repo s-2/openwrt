@@ -110,6 +110,13 @@ define Build/append-string
 	echo -n $(1) >> $@
 endef
 
+define Build/append-md5sum-ascii-salted
+	cp $@ $@.salted
+	echo -ne $(1) >> $@.salted
+	$(STAGING_DIR_HOST)/bin/mkhash md5 $@.salted | xargs echo -ne >> $@
+	rm $@.salted
+endef
+
 # append a fake/empty uImage header, to fool bootloaders rootfs integrity check
 # for example
 define Build/append-uImage-fakehdr
