@@ -177,7 +177,7 @@ define Device/dlink_dap-1620-a1
   DEVICE_VENDOR := D-Link
   DEVICE_MODEL := DAP-1620
   DEVICE_VARIANT := A1
-  DEVICE_PACKAGES += kmod-mt76x2
+  DEVICE_PACKAGES += kmod-mt76x2 kmod-phy-realtek
   IMAGE_SIZE := 4672k
   IMAGES += factory.bin
   IMAGE/factory.bin := $$(sysupgrade_bin) | \
