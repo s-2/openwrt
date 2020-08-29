@@ -22,33 +22,33 @@
 		compatible = "gpio-leds";
 
 		led_power: power {
-			label = "d-link:green:power";
-			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
+			label = "dap-1620:green:power";
+			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
 		};
 
 		led_status: status {
-			label = "d-link:red:status";
-			gpios = <&gpio2 40 GPIO_ACTIVE_LOW>;
+			label = "dap-1620:red:status";
+			gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
 		};
 
 		rssilow {
 			label = "dap-1620:red:rssilow";
-			gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
 		};
 
 		rssimediumlow {
 			label = "dap-1620:green:rssimediumlow";
-			gpios = <&gpio2 13 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 12 GPIO_ACTIVE_LOW>;
 		};
 
 		rssimediumhigh {
 			label = "dap-1620:green:rssimediumhigh";
-			gpios = <&gpio2 8 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 8 GPIO_ACTIVE_LOW>;
 		};
 
 		rssihigh {
 			label = "dap-1620:green:rssihigh";
-			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
 		};
 	};
 };
@@ -148,8 +148,21 @@
 	};
 };
 
+&pinctrl {
+	phy_reset_pins: phy-reset {
+		gpio {
+			groups = "spi refclk";
+			function = "gpio";
+		};
+	};
+};
 
 &ethernet {
+	status = "okay";
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&rgmii1_pins &mdio_pins &phy_reset_pins>;
+
 	port@0 {
 		phy-handle = <&phy0>;
 		phy-mode = "rgmii";
@@ -159,6 +172,7 @@
 		status = "okay";
 
 		phy0: ethernet-phy@0 {
+			status = "okay";
 			reg = <0>;
 			phy-mode = "rgmii";
 		};
