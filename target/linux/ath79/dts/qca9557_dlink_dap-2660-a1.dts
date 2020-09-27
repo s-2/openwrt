@@ -17,10 +17,6 @@
 		led-upgrade = &led_power_red;
 	};
 
-	chosen {
-		bootargs = "console=ttyS0,115200n8";
-	};
-
 	keys {
 		compatible = "gpio-keys";
 
@@ -136,8 +132,13 @@
 &eth0 {
 	status = "okay";
 
-	pll-data = <0x8f000000 0x80000101 0x80001616>;
+	pll-data = <0x96000000 0x94000101 0x94001313>;
 	phy-handle = <&phy0>;
+
+	gmac-config {
+		device = <&gmac>;
+		rgmii-enabled = <1>;
+	};
 };
 
 &pcie0 {
@@ -146,9 +147,6 @@
 	wifi@0,0 {
 		compatible = "pci168c,003c";
 		reg = <0x0000 0 0 0 0>;
-
-		gpio-controller;
-		#gpio-cells = <2>;
 	};
 };
 
