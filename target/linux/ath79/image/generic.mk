@@ -669,8 +669,8 @@ define Device/dlink_dap-2695-a1
   IMAGES := factory.img sysupgrade.bin
   IMAGE_SIZE := 15360k
   IMAGE/default := append-kernel | pad-offset 65536 160
-  IMAGE/factory.img := $$(IMAGE/default) | append-rootfs | wrgg-pad-rootfs | \
-	mkwrggimg | check-size
+  IMAGE/factory.img := append-kernel | pad-offset 6144k 160 | \
+	append-rootfs | wrgg-pad-rootfs | mkwrggimg | check-size
   IMAGE/sysupgrade.bin := $$(IMAGE/default) | mkwrggimg | append-rootfs | \
 	wrgg-pad-rootfs | append-metadata |  check-size
   KERNEL := kernel-bin | append-dtb | relocate-kernel | lzma
