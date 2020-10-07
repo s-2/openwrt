@@ -137,6 +137,14 @@
 
 &pcie {
 	status = "okay";
+
+	wifi@0,0 {
+		compatible = "168c,0030";
+		reg = <0x0000 0 0 0 0>;
+		mtd-mac-address = <&art 0x1002>;
+		mtd-mac-address-increment = <2>;
+		qca,disable-2ghz;
+	};
 };
 
 &wmac {
