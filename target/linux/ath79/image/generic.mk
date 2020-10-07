@@ -161,6 +161,18 @@ define Build/wrgg-pad-rootfs
 	$(STAGING_DIR_HOST)/bin/padjffs2 $(IMAGE_ROOTFS) -c 64 >>$@
 endef
 
+define Build/mkzyxelzldfw
+       dd if=$@ of=kernelnwa5120.tmp bs=$(word 1,$(1)) count=1
+       dd if=$@ of=squashfs_ro.tmp bs=$(word 1,$(1)) skip=1
+       $(STAGING_DIR_HOST)/bin/mkzyxelzldfw \
+               -d 0x9d03 -d 0x07e1 -d 0x08e1 -m NWA5120 -v 0x100 -c 1.00.03 \
+               -i kernelnwa5120.tmp -t kernel -x kernel -r 2.6.31 -o 0x30000 \
+               -i squashfs_ro.tmp -t core -r 5.10\(###.8\) -x zldfs \
+               -o 0x150000 -b $(word 2,$(1)) output.tmp
+       mv output.tmp $@
+       rm kernelnwa5120.tmp squashfs_ro.tmp
+endef
+
 define Build/zyxel-tar-bz2
 	mkdir -p $@.tmp
 	mv $@ $@.tmp/$(word 2,$(1))
@@ -2741,6 +2753,28 @@ define Device/zyxel_nwa1123-ni
   ZYXEL_MODEL_STRING := AAEO
 endef
 TARGET_DEVICES += zyxel_nwa1123-ni
+
+define Device/zyxel_nwa51xx
+  $(Device/loader-okli-uimage)
+  SOC := ar9342
+  DEVICE_VENDOR := Zyxel
+  LOADER_FLASH_OFFS := 0x040000
+  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x4f4b4c49
+  IMAGE_SIZE := 14464k
+  IMAGES += factory-$$$$(ZYXEL_MODEL_STRING).bin
+  IMAGE/factory-$$$$(ZYXEL_MODEL_STRING).bin := \
+	append-loader-okli-uimage $(1) | pad-to 65024 | append-kernel | \
+	pad-offset $$$$(BLOCKSIZE) 512 | append-rootfs | pad-rootfs | \
+	check-size | mkzyxelzldfw 1179136 0x080b4aec
+endef
+
+define Device/zyxel_nwa5123-ni
+  $(Device/zyxel_nwa51xx)
+  DEVICE_MODEL := NWA5123
+  DEVICE_VARIANT := NI
+  ZYXEL_MODEL_STRING := AAHY
+endef
+TARGET_DEVICES += zyxel_nwa5123-ni
 
 define Device/zyxel_nbg6616
   SOC := qca9557
