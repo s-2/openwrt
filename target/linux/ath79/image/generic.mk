@@ -160,7 +160,6 @@ define Build/wrgg-pad-rootfs
 	$(STAGING_DIR_HOST)/bin/padjffs2 $(IMAGE_ROOTFS) -c 64 >>$@
 endef
 
-
 define Device/seama
   KERNEL := kernel-bin | append-dtb | relocate-kernel | lzma
   KERNEL_INITRAMFS := $$(KERNEL) | seama
@@ -2406,6 +2405,16 @@ define Device/zbtlink_zbt-wd323
 	kmod-usb-serial-cp210x uqmi
 endef
 TARGET_DEVICES += zbtlink_zbt-wd323
+
+define Device/zyxel_nwa5123-ni
+  SOC := ar9342
+  DEVICE_VENDOR := Zyxel
+  DEVICE_MODEL := NWA5123
+  DEVICE_VARIANT := NI
+  DEVICE_PACKAGES := kmod-ath9k
+  IMAGE_SIZE := 15680k
+endef
+TARGET_DEVICES += zyxel_nwa5123-ni
 
 define Device/zyxel_nbg6616
   SOC := qca9557
