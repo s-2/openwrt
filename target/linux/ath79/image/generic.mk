@@ -108,6 +108,18 @@ define Build/mkwrggimg
 	mv $@.imghdr $@
 endef
 
+define Build/mkzyxelzldfw
+	dd if=$@ of=kernelnwa5120.tmp bs=$(word 1,$(1)) count=1
+	dd if=$@ of=squashfs_ro.tmp bs=$(word 1,$(1)) skip=1
+	$(STAGING_DIR_HOST)/bin/mkzyxelzldfw \
+		-d 0x9d03 -d 0x07e1 -d 0x08e1 -m NWA5120 -v 0x100 -c 1.00.03 \
+		-i kernelnwa5120.tmp -t kernel -x kernel -r 2.6.31 -o 0x30000 \
+		-i squashfs_ro.tmp -t core -r 5.10\(###.8\) -x zldfs \
+		-o 0x150000 -b $(word 2,$(1)) output.tmp
+	mv output.tmp $@
+	rm kernelnwa5120.tmp squashfs_ro.tmp
+endef
+
 define Build/nec-enc
   $(STAGING_DIR_HOST)/bin/nec-enc \
     -i $@ -o $@.new -k $(1)
@@ -159,7 +171,6 @@ endef
 define Build/wrgg-pad-rootfs
 	$(STAGING_DIR_HOST)/bin/padjffs2 $(IMAGE_ROOTFS) -c 64 >>$@
 endef
-
 
 define Device/seama
   KERNEL := kernel-bin | append-dtb | relocate-kernel | lzma
@@ -2376,6 +2387,18 @@ define Device/zbtlink_zbt-wd323
 	kmod-usb-serial-cp210x uqmi
 endef
 TARGET_DEVICES += zbtlink_zbt-wd323
+
+define Device/zyxel_nwa5123-ni
+  # todo: don't use sysupgrade (metadata); dont hardcode file offset arguments?
+  SOC := ar9342
+  DEVICE_VENDOR := Zyxel
+  DEVICE_MODEL := NWA5123
+  DEVICE_VARIANT := NI
+  IMAGE_SIZE := 14464k
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(IMAGE/sysupgrade.bin) | mkzyxelzldfw 1152k 0x080b4aec
+endef
+TARGET_DEVICES += zyxel_nwa5123-ni
 
 define Device/zyxel_nbg6616
   SOC := qca9557
