@@ -691,6 +691,29 @@ define Device/devolo_magic-2-wifi
 endef
 TARGET_DEVICES += devolo_magic-2-wifi
 
+define Device/dlink_covr-p2500-a1
+  SOC := qca9563
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := COVR-P2500
+  DEVICE_VARIANT := A1
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct open-plc-utils
+# todo: increase image size by splitting firmware to fw1 and fw2
+  IMAGE_SIZE := 14528k
+  COMPILE := loader-$(1).bin loader-$(1).uImage
+  COMPILE/loader-$(1).bin := loader-okli-compile
+  COMPILE/loader-$(1).uImage := append-loader-okli $(1) | pad-to 64k | \
+	lzma | uImage lzma
+  LOADER_TYPE := bin
+  LOADER_FLASH_OFFS := 0x050000
+  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x4f4b4c49
+# todo: allow larger factory images (split + merge with uImage partition)
+  IMAGES += loader.bin sysupgrade.bin recovery.bin
+  IMAGE/loader.bin := append-loader-okli $(1) | pad-to 64k | lzma | \
+	uImage lzma
+  IMAGE/recovery.bin := $$(IMAGE/sysupgrade.bin)
+endef
+TARGET_DEVICES += dlink_covr-p2500-a1
+
 define Device/dlink_dap-13xx
   SOC := qca9533
   DEVICE_VENDOR := D-Link
