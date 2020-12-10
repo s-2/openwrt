@@ -1,0 +1,17 @@
+. /lib/functions.sh
+
+board=$(board_name)
+
+case "$board" in
+dlink,covr-p2500-a1)
+	uci set network.mesh_plc=interface
+	uci set network.mesh_plc.proto=gluon_wired
+	uci set network.mesh_plc.vxlan=1
+	uci set network.mesh_plc.disabled='0'
+	uci set network.mesh_plc.transitive='1'
+	uci set network.mesh_plc.index=1
+	uci set network.mesh_plc.ifname='eth0.3'
+	uci commit network
+	;;
+esac
+
