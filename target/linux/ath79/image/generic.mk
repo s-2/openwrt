@@ -744,6 +744,32 @@ define Device/dlink_covr-c1200-a1
 endef
 TARGET_DEVICES += dlink_covr-c1200-a1
 
+define Device/dlink_covr-p2500-a1
+  SOC := qca9563
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := COVR-P2500
+  DEVICE_VARIANT := A1
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct \
+	open-plc-utils open-plc-utils-hpavkey open-plc-utils-modpib \
+	open-plc-utils-plchost open-plc-utils-plctool
+  LOADER_TYPE := bin
+  LOADER_FLASH_OFFS := 0x050000
+  LOADER_KERNEL_MAGIC := 0x68737173
+  COMPILE := loader-$(1).bin loader-$(1).uImage
+  COMPILE/loader-$(1).bin := loader-okli-compile
+  COMPILE/loader-$(1).uImage := append-loader-okli $(1) | pad-to 64k | \
+	lzma | uImage lzma
+  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x68737173
+  IMAGE_SIZE := 14528k
+  IMAGES += factory.bin recovery.bin
+  IMAGE/recovery.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | check-size | pad-to 14528k | \
+	append-file $(KDIR)/loader-$(1).uImage | pad-to 15616k
+  IMAGE/factory.bin := $$(IMAGE/recovery.bin) | dlink-sge-image | \
+	dlink-sge-signature COVR-P2500
+endef
+TARGET_DEVICES += dlink_covr-p2500-a1
+
 define Device/dlink_dap-13xx
   SOC := qca9533
   DEVICE_VENDOR := D-Link
