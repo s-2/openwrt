@@ -1,0 +1,62 @@
+#!/bin/sh /etc/rc.common
+
+START=92
+STOP=92
+
+. /lib/functions/system.sh
+
+board=$(board_name)
+
+netpwd="hannover.freifunk.net"
+netstring=${netpwd}
+plcinterface="eth0.3"
+
+start() {
+	case "$board" in
+	dlink,covr-p2500-a1)
+		nvmpath="/lib/plc/MAC-7500-v2.2.2-03-X-CS.nvm"
+		libpibpath="/lib/plc/COVRP2500AVA1_PIB100EU_WM.pib"
+		pibpath="/var/COVRP2500AVA1_PIB100EU_WM.pib"
+
+		rm -f ${pibpath}
+		cp ${libpibpath} ${pibpath}
+
+		. /lib/functions/system.sh
+
+		# patch MAC into pib file
+		mac=$(mtd_get_mac_ascii art protest_plc_mac)
+		modpib -M $mac $pibpath
+
+		# patch NMK into pib file (7A2A5F938CA2BFCF6D740596FB15C818)
+		nmk=$(hpavkey -M ${netpwd})
+		modpib -N $nmk ${pibpath}
+
+		# patch DAK into pib file (built from DEK, as found on label)
+		###dek=$(mtd_get_key art plc_dek) # function not found in ath79...
+		part=$(find_mtd_part "art")
+		key=plc_dek
+		dek=$(strings "$part" | sed -n 's/^'"$key"'=//p')
+
+		dak=$(hpavkey -D ${dek})
+		modpib -D ${dak} ${pibpath}
+
+		# insert gluon hostname (USR string), set MFG and NET string
+		modpib -U $(uci get system.@system[0].hostname) \
+			-S "D-Link COVR-P2500" -T $netstring ${pibpath}
+
+		# start serving firmware, will be requested by QCA7550 on boot
+		plchost -i $plcinterface -N $nvmpath -P $pibpath &
+		;;
+	esac
+}
+
+stop() {
+	case "$board" in
+	dlink,covr-p2500-a1)
+		killall plchost
+		# reset adapter into bootloader mode
+		plctool -i $plcinterface -R $(mtd_get_mac_ascii art protest_plc_mac)
+		;;
+	esac
+}
+
