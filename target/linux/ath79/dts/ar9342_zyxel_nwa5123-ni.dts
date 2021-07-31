@@ -63,37 +63,39 @@
 			#size-cells = <1>;
 
 			partition@0 {
-				label = "u-boot";
-				reg = <0x000000 0x040000>;
+				label = "uboot";
+				reg = <0x0 0x30000>;
 				read-only;
 			};
 
-			partition@40000 {
-				label = "u-boot-env";
-				reg = <0x040000 0x010000>;
+			partition@30000 {
+				label = "loader";
+				reg = <0x30000 0x120000>;
+				read-only;
 			};
 
-			firmware: partition@50000 {
-				compatible = "denx,uimage";
+			partition@150000 {
+				compatible = "openwrt,uimage", "denx,uimage";
+				openwrt,ih-magic = <IH_MAGIC_OKLI>;
 				label = "firmware";
-				reg = <0x50000 0xf50000>;
+				reg = <0x150000 0xd00000>;
 			};
 
-			partition@fa0000 {
-				label = "config";
-				reg = <0xfa0000 0x040000>;
+			partition@e50000 {
+				label = "zyxel";
+				reg = <0xe50000 0x180000>;
 				read-only;
 			};
 
-			partition@fe0000 {
-				label = "mib0";
-				reg = <0xfe0000 0x10000>;
+			partition@fd0000 {
+				label = "logs";
+				reg = <0xfd0000 0x20000>;
 				read-only;
 			};
 
 			art: partition@ff0000 {
 				label = "art";
-				reg = <0xff0000 0x010000>;
+				reg = <0xff0000 0x10000>;
 				read-only;
 			};
 		};

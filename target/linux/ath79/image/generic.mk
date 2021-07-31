@@ -2411,8 +2411,15 @@ define Device/zyxel_nwa5123-ni
   DEVICE_VENDOR := Zyxel
   DEVICE_MODEL := NWA5123
   DEVICE_VARIANT := NI
-  DEVICE_PACKAGES := kmod-ath9k
-  IMAGE_SIZE := 15680k
+  LOADER_TYPE := bin
+  LOADER_FLASH_OFFS := 0x150000
+  COMPILE := loader-$(1).bin loader-$(1).uImage
+  COMPILE/loader-$(1).bin := loader-okli-compile
+  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x4f4b4c49
+  IMAGE_SIZE := 13312k
+  IMAGES += loader-$(1).uImage
+  IMAGE/loader-$(1).uImage := append-loader-okli $(1) | pad-to 64k | \
+	lzma | uImage lzma
 endef
 TARGET_DEVICES += zyxel_nwa5123-ni
 
