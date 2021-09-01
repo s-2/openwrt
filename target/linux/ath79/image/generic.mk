@@ -2425,9 +2425,10 @@ define Device/zyxel_nwa5123-ni
   DEVICE_VARIANT := NI
   LOADER_TYPE := bin
   LOADER_FLASH_OFFS := 0x150000
+  LOADER_KERNEL_MAGIC := 0x68737173
   COMPILE := loader-$(1).bin loader-$(1).uImage
   COMPILE/loader-$(1).bin := loader-okli-compile
-  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x4f4b4c49
+  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x68737173
   IMAGE_SIZE := 13312k
   IMAGES += factory.bin
 #  IMAGE/loader-$(1).uImage := append-loader-okli $(1) | pad-to 64k | \

@@ -77,7 +77,7 @@
 
 			partition@150000 {
 				compatible = "openwrt,uimage", "denx,uimage";
-				openwrt,ih-magic = <IH_MAGIC_OKLI>;
+				openwrt,ih-magic = <0x68737173>;
 				label = "firmware";
 				reg = <0x150000 0xd00000>;
 			};
