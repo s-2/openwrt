@@ -2423,18 +2423,17 @@ define Device/zyxel_nwa5123-ni
   DEVICE_VENDOR := Zyxel
   DEVICE_MODEL := NWA5123
   DEVICE_VARIANT := NI
-  LOADER_TYPE := bin
-  LOADER_FLASH_OFFS := 0x150000
-  LOADER_KERNEL_MAGIC := 0x68737173
-  COMPILE := loader-$(1).bin loader-$(1).uImage
-  COMPILE/loader-$(1).bin := loader-okli-compile
-  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x68737173
-  IMAGE_SIZE := 13312k
+#  LOADER_TYPE := bin
+#  LOADER_FLASH_OFFS := 0x150000
+#  LOADER_KERNEL_MAGIC := 0x68737173
+#  COMPILE := loader-$(1).bin loader-$(1).uImage
+#  COMPILE/loader-$(1).bin := loader-okli-compile
+#  KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x68737173
+  IMAGE_SIZE := 14464k
   IMAGES += factory.bin
 #  IMAGE/loader-$(1).uImage := append-loader-okli $(1) | pad-to 64k | \
 #	lzma | uImage lzma
-  IMAGE/factory.bin := append-loader-okli $(1) | lzma | uImage lzma | \
-	pad-to 64k | append-kernel | pad-to $$$$(BLOCKSIZE) | \
+  IMAGE/factory.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
 	append-rootfs | pad-rootfs | check-size | mkzyxelzldfw 65024 0x080b4aec
 endef
 TARGET_DEVICES += zyxel_nwa5123-ni

@@ -70,16 +70,9 @@
 			};
 
 			partition@30000 {
-				label = "loader";
-				reg = <0x30000 0x120000>;
-				read-only;
-			};
-
-			partition@150000 {
 				compatible = "openwrt,uimage", "denx,uimage";
-				openwrt,ih-magic = <0x68737173>;
 				label = "firmware";
-				reg = <0x150000 0xd00000>;
+				reg = <0x30000 0xe20000>;
 			};
 
 			partition@e50000 {
