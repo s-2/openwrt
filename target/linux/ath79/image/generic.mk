@@ -2435,7 +2435,7 @@ define Device/zyxel_nwa5123-ni
 #	lzma | uImage lzma
   IMAGE/factory.bin := append-loader-okli $(1) | lzma | uImage lzma | \
 	pad-to 64k | append-kernel | pad-to $$$$(BLOCKSIZE) | \
-	append-rootfs | pad-rootfs | check-size | mkzyxelzldfw 1179136 0x080b4aec
+	append-rootfs | pad-rootfs | check-size | mkzyxelzldfw 65024 0x080b4aec
 endef
 TARGET_DEVICES += zyxel_nwa5123-ni
 
