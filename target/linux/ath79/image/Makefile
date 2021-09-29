@@ -72,6 +72,14 @@ define Device/Default
 	append-rootfs | pad-rootfs | append-metadata | check-size
 endef
 
+define Device/loader-okli-uimage
+  LOADER_TYPE := bin
+  COMPILE := loader-$(1).bin loader-$(1).uImage
+  COMPILE/loader-$(1).bin := loader-okli-compile
+  COMPILE/loader-$(1).uImage := append-loader-okli $(1) | pad-to 64k | \
+	lzma | uImage lzma
+endef
+
 include $(SUBTARGET).mk
 
 ifeq ($(SUBTARGET),generic)

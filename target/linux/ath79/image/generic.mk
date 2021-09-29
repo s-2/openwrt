@@ -2237,14 +2237,10 @@ endef
 TARGET_DEVICES += zbtlink_zbt-wd323
 
 define Device/zyxel_nwa112x
+  $(Device/loader-okli-uimage)
   SOC := ar9342
   DEVICE_VENDOR := ZyXEL
-  LOADER_TYPE := bin
   LOADER_FLASH_OFFS := 0x050000
-  COMPILE := loader-$(1).bin loader-$(1).uImage
-  COMPILE/loader-$(1).bin := loader-okli-compile
-  COMPILE/loader-$(1).uImage := append-loader-okli $(1) | pad-to 64k | \
-	lzma | uImage lzma
   KERNEL := kernel-bin | append-dtb | lzma | uImage lzma -M 0x4f4b4c49
   IMAGE_SIZE := 8192k
   IMAGES += factory-$$$$(ZYXEL_MODEL_STRING).bin
