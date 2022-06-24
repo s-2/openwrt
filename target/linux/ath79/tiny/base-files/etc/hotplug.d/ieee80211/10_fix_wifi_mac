@@ -1,0 +1,20 @@
+#!/bin/ash
+
+[ "$ACTION" = "add" ] || exit 0
+
+PHYNBR=${DEVPATH##*/phy}
+
+[ -n $PHYNBR ] || exit 0
+
+. /lib/functions.sh
+. /lib/functions/system.sh
+. /lib/functions/uci-defaults.sh
+
+board=$(board_name)
+
+case "$board" in
+	dlink,dsp-w215-b1)
+		mtd_get_mac_text "mp" 0x1 > /sys${DEVPATH}/macaddress
+		ucidef_set_label_macaddr $(mtd_get_mac_text "mp" 0x1)
+		;;
+esac

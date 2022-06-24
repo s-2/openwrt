@@ -1,6 +1,19 @@
 include ./common-buffalo.mk
 include ./common-senao.mk
 
+DEVICE_VARS += DAP_SIGNATURE
+
+define Build/mkdapimg2
+	$(STAGING_DIR_HOST)/bin/mkdapimg2 \
+		-i $@ -o $@.new \
+		-s $(DAP_SIGNATURE) \
+		-v $(VERSION_DIST)-$(firstword $(subst +, , \
+			$(firstword $(subst -, ,$(REVISION))))) \
+		-r Default \
+		$(if $(1),-k $(1))
+	mv $@.new $@
+endef
+
 define Device/buffalo_whr-g301n
   $(Device/buffalo_common)
   SOC := ar7240
@@ -29,6 +42,21 @@ define Device/dlink_dir-615-e4
   DEFAULT := n
 endef
 TARGET_DEVICES += dlink_dir-615-e4
+
+define Device/dlink_dsp-w215-b1
+  SOC := qca9531
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DSP-W215
+  DEVICE_VARIANT := B1
+  IMAGE_SIZE := 5440k
+  DEVICE_PACKAGES := -kmod-mdio -kmod-mii -luci-proto-ppp -ppp \
+	-ppp-mod-pppoe -swconfig
+  IMAGES += factory.bin
+  IMAGE/factory.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
+	append-rootfs | pad-rootfs | check-size | mkdapimg2 0x000E0000
+  DAP_SIGNATURE := HONEYBEE-FIRMWARE-DSP-W215
+endef
+TARGET_DEVICES += dlink_dsp-w215-b1
 
 define Device/engenius_eap350-v1
   $(Device/senao_loader_okli)
