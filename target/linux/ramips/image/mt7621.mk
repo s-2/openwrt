@@ -14,6 +14,23 @@ ifdef CONFIG_LINUX_5_10
   DTS_CPPFLAGS += -DDTS_LEGACY
 endif
 
+RELOCATE_LOADADDR = 0x81000000
+
+define Build/uImage-relocate
+	mkimage \
+		-A $(LINUX_KARCH) \
+		-O linux \
+		-T kernel \
+		-C $(word 1,$(1)) \
+		-a $(RELOCATE_LOADADDR) \
+		-e $(RELOCATE_LOADADDR) \
+		-n '$(if $(UIMAGE_NAME),$(UIMAGE_NAME),$(call toupper,$(LINUX_KARCH)) $(VERSION_DIST) Linux-$(LINUX_VERSION))' \
+		$(if $(UIMAGE_MAGIC),-M $(UIMAGE_MAGIC)) \
+		$(wordlist 2,$(words $(1)),$(1)) \
+		-d $@ $@.new
+	mv $@.new $@
+endef
+
 define Build/arcadyan-trx
 	echo -ne "hsqs" > $@.hsqs
 	$(eval trx_magic=$(word 1,$(1)))
@@ -486,6 +503,26 @@ define Device/cudy_x6
   DEVICE_PACKAGES := kmod-mt7915e
 endef
 TARGET_DEVICES += cudy_x6
+
+define Device/dlink_dap-x1860-a1
+  $(Device/dsa-migration)
+  IMAGE_SIZE := 53248k
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DAP-X1860
+  DEVICE_VARIANT := A1
+  UBINIZE_OPTS := -E 5
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  KERNEL_SIZE := 4096k
+  KERNEL := kernel-bin | append-dtb | relocate-kernel | lzma | \
+	uImage-relocate lzma
+  IMAGES += factory.bin
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
+	check-size | elx-header 011b0060 8844A2D168B45A2D
+  DEVICE_PACKAGES := kmod-mt7915e rssileds
+endef
+TARGET_DEVICES += dlink_dap-x1860-a1
 
 define Device/dlink_dir-8xx-a1
   $(Device/dsa-migration)
