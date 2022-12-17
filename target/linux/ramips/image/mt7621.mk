@@ -554,6 +554,27 @@ define Device/dlink_dap-1620-b1
 endef
 TARGET_DEVICES += dlink_dap-1620-b1
 
+define Device/dlink_covr-x1860-a1
+  $(Device/dsa-migration)
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  KERNEL_SIZE := 8192k
+  IMAGE_SIZE := 40960k
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := COVR-X1860
+  DEVICE_VARIANT := A1
+  DEVICE_PACKAGES := kmod-mt7915e
+  UBINIZE_OPTS := -E 5
+  KERNEL_LOADADDR := 0x82000000
+  KERNEL := kernel-bin | relocate-kernel 0x80001000 | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  IMAGES += recovery.bin
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  IMAGE/recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
+	check-size
+endef
+TARGET_DEVICES += dlink_covr-x1860-a1
+
 define Device/dlink_dap-x1860-a1
   $(Device/nand)
   IMAGE_SIZE := 53248k
