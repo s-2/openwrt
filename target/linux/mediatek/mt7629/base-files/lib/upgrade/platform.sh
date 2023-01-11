@@ -9,6 +9,7 @@ platform_do_upgrade() {
 	local board=$(board_name)
 
 	case "$board" in
+	dlink,dir-1950-a1|\
 	iptime,a6004mx)
 		nand_do_upgrade "$1"
 		;;
