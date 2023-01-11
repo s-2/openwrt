@@ -6,6 +6,7 @@ board=$(board_name)
 board_config_update
 
 case $board in
+dlink,dir-1950-a1|\
 iptime,a6004mx)
 	ucidef_set_led_netdev "wan" "WAN" "orange:wan" "eth1"
 	;;

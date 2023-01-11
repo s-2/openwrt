@@ -8,6 +8,7 @@ mediatek_setup_interfaces()
 	local board="$1"
 
 	case $board in
+	dlink,dir-1950-a1|\
 	iptime,a6004mx)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" "eth1"
 		;;
