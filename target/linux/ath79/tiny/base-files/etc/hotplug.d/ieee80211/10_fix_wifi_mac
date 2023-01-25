@@ -13,6 +13,10 @@ PHYNBR=${DEVPATH##*/phy}
 board=$(board_name)
 
 case "$board" in
+	dlink,dsp-w215-a1)
+		mtd_get_mac_text "mac" 0x4 > /sys${DEVPATH}/macaddress
+		ucidef_set_label_macaddr $(mtd_get_mac_text "mac" 0x4)
+		;;
 	dlink,dsp-w215-b1)
 		mtd_get_mac_text "mp" 0x1 > /sys${DEVPATH}/macaddress
 		ucidef_set_label_macaddr $(mtd_get_mac_text "mp" 0x1)

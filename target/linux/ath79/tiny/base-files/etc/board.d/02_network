@@ -125,6 +125,12 @@ ath79_setup_wireless()
 	local board="$1"
 
 	case "$board" in
+	dlink,dsp-w215-a1)
+		ssid=$(dd if=$(find_mtd_part 'mac') bs=1 skip=$((0x2D)) count=8 2>/dev/null)
+		pin=$(dd if=$(find_mtd_part 'mac') bs=1 skip=$((0x4E)) count=6 2>/dev/null)
+		ucidef_set_wireless $ssid psk2+aes $ssid$pin
+		ucidef_enable_wireless 2g
+		;;
 	dlink,dsp-w215-b1)
 		ssid=$(dd if=$(find_mtd_part 'mp') bs=1 skip=$((0x4E)) count=8 2>/dev/null)
 		pin=$(dd if=$(find_mtd_part 'mp') bs=1 skip=$((0x3E)) count=6 2>/dev/null)

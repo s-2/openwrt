@@ -1,0 +1,198 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "ar9331.dtsi"
+
+/ {
+	model = "D-Link DSP-W215 A1";
+	compatible = "dlink,dsp-w215-a1", "qca,ar9331";
+
+	aliases {
+		led-boot = &led_power_green;
+		led-failsafe = &led_power_red;
+		led-running = &led_power_green;
+		led-upgrade = &led_power_red;
+	};
+/*
+	pinmux@18050000 {
+		compatible = "pinctrl-single";
+
+		reg = <0x18050000 0x4>;
+
+		#size-cells = <0>;
+
+		pinctrl-single,bit-per-mux;
+		pinctrl-single,register-width = <32>;
+		pinctrl-single,function-mask = <0x1>;
+		#pinctrl-cells = <2>;
+
+		cpu_pll_400: pinmux_cpu_pll_400 {
+			pinctrl-single,bits = <0x0 0x000400 0x000fc0>;
+		};
+
+		cpu_pll_500: pinmux_cpu_pll_500 {
+			pinctrl-single,bits = <0x0 0x000500 0x000fc0>;
+		};
+	};
+*/
+	keys {
+		compatible = "gpio-keys";
+/*
+		pinctrl-names = "default";
+		pinctrl-0 = <&cpu_pll_400>;
+*/
+		key_ac_toggle {
+			label = "key_ac_toggle";
+			gpios = <&gpio 11 GPIO_ACTIVE_HIGH>;
+		};
+
+		wps_reset {
+			label = "wps_reset";
+			linux,code = <KEY_RESTART>;
+			gpios = <&gpio 12 GPIO_ACTIVE_HIGH>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_power_red: power_red {
+			label = "red:power";
+			gpios = <&gpio 26 GPIO_ACTIVE_LOW>;
+		};
+
+		led_power_green: power_green {
+			label = "green:power";
+			gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		switch {
+			label = "green:switch";
+			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+		};
+	};
+/*
+	gpio-export {
+		compatible = "gpio-export";
+
+		ac_output_enable {
+			gpio-export,name = "gpio:ac_output_enable";
+			gpio-export,output = <0>;
+			gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
+		};
+	};
+*/
+};
+
+&spi {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x10000>;
+				read-only;
+			};
+			
+			art: partition@10000 {
+				label = "art";
+				reg = <0x10000 0x10000>;
+				read-only;
+				
+				compatible = "nvmem-cells";
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				cal_art_1000: cal@1000 {
+					reg = <0x1000 0x440>;
+				};
+			};
+			
+			partition@20000 {
+				label = "mac";
+				reg = <0x20000 0x10000>;
+				read-only;
+			};
+			
+			partition@30000 {
+				label = "nvram";
+				reg = <0x30000 0x10000>;
+				read-only;
+			};
+			
+			partition@40000 {
+				label = "firmware";
+				reg = <0x40000 0x480000>;
+				compatible = "denx,uimage";
+			};
+			
+			partition@4d0000 {
+				label = "uImage2";
+				reg = <0x4c0000 0x100000>;
+				read-only;
+			};
+			
+			partition@5c0000 {
+				label = "rootfs2";
+				reg = <0x5c0000 0x1c0000>;
+				read-only;
+			};
+			
+			partition@780000 {
+				label = "log1";
+				reg = <0x780000 0x10000>;
+				read-only;
+			};
+			
+			partition@790000 {
+				label = "log2";
+				reg = <0x790000 0x10000>;
+				read-only;
+			};
+			
+			partition@7a0000 {
+				label = "log3";
+				reg = <0x7a0000 0x10000>;
+				read-only;
+			};
+			
+			partition@7b0000 {
+				label = "log4";
+				reg = <0x7b0000 0x10000>;
+				read-only;
+			};
+			
+			partition@7c0000 {
+				label = "mylink";
+				reg = <0x7c0000 0x40000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&mdio1 {
+	status = "disabled";
+};
+
+&eth1 {
+	status = "disabled";
+};
+
+&wmac {
+	status = "okay";
+
+	nvmem-cells = <&cal_art_1000>;
+	nvmem-cell-names = "calibration";
+};

@@ -43,6 +43,17 @@ define Device/dlink_dir-615-e4
 endef
 TARGET_DEVICES += dlink_dir-615-e4
 
+define Device/dlink_dsp-w215-a1
+  SOC := ar9331
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DSP-W215
+  DEVICE_VARIANT := A1
+  IMAGE_SIZE := 4608k
+  DEVICE_PACKAGES := -kmod-mdio -kmod-mii -luci-proto-ppp -ppp \
+	-ppp-mod-pppoe -swconfig
+endef
+TARGET_DEVICES += dlink_dsp-w215-a1
+
 define Device/dlink_dsp-w215-b1
   SOC := qca9531
   DEVICE_VENDOR := D-Link
