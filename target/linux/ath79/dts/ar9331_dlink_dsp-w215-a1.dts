@@ -15,34 +15,10 @@
 		led-running = &led_power_green;
 		led-upgrade = &led_power_red;
 	};
-/*
-	pinmux@18050000 {
-		compatible = "pinctrl-single";
 
-		reg = <0x18050000 0x4>;
-
-		#size-cells = <0>;
-
-		pinctrl-single,bit-per-mux;
-		pinctrl-single,register-width = <32>;
-		pinctrl-single,function-mask = <0x1>;
-		#pinctrl-cells = <2>;
-
-		cpu_pll_400: pinmux_cpu_pll_400 {
-			pinctrl-single,bits = <0x0 0x000400 0x000fc0>;
-		};
-
-		cpu_pll_500: pinmux_cpu_pll_500 {
-			pinctrl-single,bits = <0x0 0x000500 0x000fc0>;
-		};
-	};
-*/
 	keys {
 		compatible = "gpio-keys";
-/*
-		pinctrl-names = "default";
-		pinctrl-0 = <&cpu_pll_400>;
-*/
+
 		key_ac_toggle {
 			label = "key_ac_toggle";
 			gpios = <&gpio 11 GPIO_ACTIVE_HIGH>;
