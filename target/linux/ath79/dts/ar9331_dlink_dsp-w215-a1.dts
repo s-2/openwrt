@@ -61,6 +61,23 @@
 		};
 	};
 */
+
+	virtual_flash {
+		compatible = "mtd-concat";
+		devices = <&fwconcat0 &fwconcat1>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				reg = <0x0 0x0>;
+				label = "firmware";
+				compatible = "openwrt,uimage", "denx,uimage";
+			};
+		};
+	};
 };
 
 &spi {
@@ -107,52 +124,20 @@
 				read-only;
 			};
 			
-			partition@40000 {
-				label = "firmware";
+			fwconcat0: partition@40000 {
+				label = "fwconcat0";
 				reg = <0x40000 0x480000>;
-				compatible = "denx,uimage";
 			};
 			
 			partition@4d0000 {
-				label = "uImage2";
-				reg = <0x4c0000 0x100000>;
+				label = "recovery";
+				reg = <0x4c0000 0x2c0000>;
 				read-only;
 			};
 			
-			partition@5c0000 {
-				label = "rootfs2";
-				reg = <0x5c0000 0x1c0000>;
-				read-only;
-			};
-			
-			partition@780000 {
-				label = "log1";
-				reg = <0x780000 0x10000>;
-				read-only;
-			};
-			
-			partition@790000 {
-				label = "log2";
-				reg = <0x790000 0x10000>;
-				read-only;
-			};
-			
-			partition@7a0000 {
-				label = "log3";
-				reg = <0x7a0000 0x10000>;
-				read-only;
-			};
-			
-			partition@7b0000 {
-				label = "log4";
-				reg = <0x7b0000 0x10000>;
-				read-only;
-			};
-			
-			partition@7c0000 {
-				label = "mylink";
-				reg = <0x7c0000 0x40000>;
-				read-only;
+			fwconcat1: partition@780000 {
+				label = "fwconcat1";
+				reg = <0x780000 0x80000>;
 			};
 		};
 	};
