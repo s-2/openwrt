@@ -21,6 +21,7 @@
 
 		key_ac_toggle {
 			label = "key_ac_toggle";
+			linux,code = <BTN_0>;
 			gpios = <&gpio 11 GPIO_ACTIVE_HIGH>;
 		};
 
@@ -50,17 +51,16 @@
 			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
 		};
 	};
-/*
+
 	gpio-export {
 		compatible = "gpio-export";
 
 		ac_output_enable {
 			gpio-export,name = "gpio:ac_output_enable";
 			gpio-export,output = <0>;
-			gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio 19 GPIO_ACTIVE_HIGH>;
 		};
 	};
-*/
 
 	virtual_flash {
 		compatible = "mtd-concat";
