@@ -423,6 +423,19 @@ define Device/dlink_dap-2610
 endef
 TARGET_DEVICES += dlink_dap-2610
 
+define Device/dlink_dwl-7620ap-a1
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := D-Link
+	DEVICE_MODEL := DWL-7620AP A1
+	SOC := qcom-ipq4019
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	DEVICE_DTS_CONFIG := config@ap.dk07.1-c1
+	DEVICE_PACKAGES := ath10k-firmware-qca9888-ct
+endef
+TARGET_DEVICES += dlink_dwl-7620ap-a1
+
 define Device/edgecore_ecw5211
 	$(call Device/FitImage)
 	$(call Device/UbiFit)

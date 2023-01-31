@@ -113,6 +113,7 @@ platform_do_upgrade() {
 	avm,fritzrepeater-3000 |\
 	buffalo,wtr-m2133hp |\
 	cilab,meshpoint-one |\
+	dlink,dwl-7620ap-a1 |\
 	edgecore,ecw5211 |\
 	edgecore,oap100 |\
 	engenius,eap2200 |\
