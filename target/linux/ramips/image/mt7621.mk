@@ -552,10 +552,13 @@ define Device/dlink_covr-x1860-a1
   KERNEL_LOADADDR := 0x82000000
   KERNEL := kernel-bin | relocate-kernel 0x80001000 | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
-  IMAGES += factory-recovery.bin
+  IMAGES += factory-recovery.bin factory-webflash.bin
+  SUPPORTED_DEVICES = COVR-X1860
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/factory-recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
 	append-ubi | check-size
+  IMAGE/factory-webflash.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | append-metadata | check-size
 endef
 TARGET_DEVICES += dlink_covr-x1860-a1
 
