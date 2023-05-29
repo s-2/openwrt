@@ -538,22 +538,6 @@ define Device/cudy_x6-v2
 endef
 TARGET_DEVICES += cudy_x6-v2
 
-define Device/dlink_dap-1620-b1
-  DEVICE_VENDOR := D-Link
-  DEVICE_MODEL := DAP-1620
-  DEVICE_VARIANT := B1
-  DEVICE_PACKAGES := kmod-mt7615-firmware rssileds
-  DLINK_HWID := MT76XMT7621-RP-PR2475-NA
-  IMAGE_SIZE := 16064k
-  IMAGES += factory.bin
-  IMAGE/factory.bin := $$(sysupgrade_bin) | \
-    check-size 11009992 | pad-to 11009992 | \
-    append-md5sum-ascii-salted ffff | \
-    append-string $$(DLINK_HWID) | \
-    check-size
-endef
-TARGET_DEVICES += dlink_dap-1620-b1
-
 define Device/dlink_covr-x1860-a1
   $(Device/dsa-migration)
   BLOCKSIZE := 128k
@@ -574,6 +558,22 @@ define Device/dlink_covr-x1860-a1
 	check-size
 endef
 TARGET_DEVICES += dlink_covr-x1860-a1
+
+define Device/dlink_dap-1620-b1
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DAP-1620
+  DEVICE_VARIANT := B1
+  DEVICE_PACKAGES := kmod-mt7615-firmware rssileds
+  DLINK_HWID := MT76XMT7621-RP-PR2475-NA
+  IMAGE_SIZE := 16064k
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(sysupgrade_bin) | \
+    check-size 11009992 | pad-to 11009992 | \
+    append-md5sum-ascii-salted ffff | \
+    append-string $$(DLINK_HWID) | \
+    check-size
+endef
+TARGET_DEVICES += dlink_dap-1620-b1
 
 define Device/dlink_dap-x1860-a1
   $(Device/nand)
