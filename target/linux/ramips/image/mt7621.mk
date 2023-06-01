@@ -9,6 +9,14 @@ DEFAULT_SOC := mt7621
 
 DEVICE_VARS += ELECOM_HWNAME LINKSYS_HWNAME DLINK_HWID
 
+define Build/append-dlink-covr-metadata
+	echo \
+		'{ \
+			"supported_devices": "$(1)", \
+			"firmware": "$($(MKHASH) md5 "$@" | head -c32)" \
+		}' | fwtool -I - $@
+endef
+
 define Build/arcadyan-trx
 	echo -ne "hsqs" > $@.hsqs
 	$(eval trx_magic=$(word 1,$(1)))
@@ -553,12 +561,11 @@ define Device/dlink_covr-x1860-a1
   KERNEL := kernel-bin | relocate-kernel 0x80001000 | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
   IMAGES += factory-recovery.bin factory-webflash.bin
-  SUPPORTED_DEVICES = COVR-X1860
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/factory-recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
 	append-ubi | check-size
   IMAGE/factory-webflash.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
-	append-ubi | append-metadata | check-size
+	append-ubi | check-size | append-dlink-covr-metadata $$(DEVICE_MODEL)
 endef
 TARGET_DEVICES += dlink_covr-x1860-a1
 
