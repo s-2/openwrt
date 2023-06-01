@@ -10,11 +10,11 @@ DEFAULT_SOC := mt7621
 DEVICE_VARS += ELECOM_HWNAME LINKSYS_HWNAME DLINK_HWID
 
 define Build/append-dlink-covr-metadata
-	echo \
-		'{ \
-			"supported_devices": "$(1)", \
-			"firmware": "$($(MKHASH) md5 "$@" | head -c32)" \
-		}' | fwtool -I - $@
+	echo -ne '{"supported_devices": "$(1)", "firmware": "' > $@metadata.tmp
+	$(MKHASH) md5 "$@" | head -c32 >> $@metadata.tmp
+	echo '"}' >> $@metadata.tmp
+	fwtool -I $@metadata.tmp $@
+	rm $@metadata.tmp
 endef
 
 define Build/arcadyan-trx
