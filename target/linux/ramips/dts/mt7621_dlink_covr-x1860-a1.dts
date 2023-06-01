@@ -89,13 +89,9 @@
 		};
 
 		partition@1c0000 {
-			label = "kernel";
-			reg = <0x1c0000 0x800000>;
-		};
-
-		partition@9c0000 {
-			label = "ubi";
-			reg = <0x9c0000 0x5200000>;
+			compatible = "denx,fit";
+			label = "firmware";
+			reg = <0x1c0000 0x5a00000>;
 		};
 
 		partition@5bc0000 {
