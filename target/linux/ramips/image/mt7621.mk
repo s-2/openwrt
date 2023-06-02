@@ -563,7 +563,8 @@ define Device/dlink_covr-x1860-a1
   UBINIZE_OPTS := -E 5
   KERNEL_LOADADDR := 0x82000000
   KERNEL := kernel-bin | relocate-kernel 0x80001000 | lzma | \
-	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
+	append-squashfs4-fakeroot
   IMAGES += factory-recovery.bin factory-webflash.bin
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/factory-recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
