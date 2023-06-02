@@ -566,10 +566,10 @@ define Device/dlink_covr-x1860-a1
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
   IMAGES += factory-recovery.bin factory-webflash.bin
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
-  IMAGE/factory-recovery.bin := append-kernel | append-rootfs | pad-rootfs | \
-	check-size
-  IMAGE/factory-webflash.bin := append-kernel | append-rootfs | pad-rootfs | \
-	check-size | append-dlink-covr-metadata $$(DEVICE_MODEL) | \
+  IMAGE/factory-recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | check-size
+  IMAGE/factory-webflash.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | check-size | append-dlink-covr-metadata $$(DEVICE_MODEL) | \
 	dlink-covr-x-image
 endef
 TARGET_DEVICES += dlink_covr-x1860-a1
