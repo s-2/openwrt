@@ -559,7 +559,7 @@ define Device/dlink_covr-x1860-a1
   DEVICE_VENDOR := D-Link
   DEVICE_MODEL := COVR-X1860
   DEVICE_VARIANT := A1
-  DEVICE_PACKAGES := kmod-mt7915e
+  DEVICE_PACKAGES := kmod-mt7915-firmware
   UBINIZE_OPTS := -E 5
   KERNEL_LOADADDR := 0x82000000
   KERNEL := kernel-bin | relocate-kernel 0x80001000 | lzma | \
