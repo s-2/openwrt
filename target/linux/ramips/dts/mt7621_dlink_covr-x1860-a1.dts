@@ -95,7 +95,13 @@
 
 		partition@9c0000 {
 			label = "ubi";
-			reg = <0x9c0000 0x5200000>;
+			reg = <0x9c0000 0x2000000>;
+		};
+
+		partition@29c0000 {
+			label = "backup";
+			reg = <0x29c0000 0x3200000>;
+			read-only;
 		};
 
 		partition@5bc0000 {
