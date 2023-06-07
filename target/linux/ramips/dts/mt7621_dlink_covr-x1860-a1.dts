@@ -54,6 +54,23 @@
 			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
 		};
 	};
+
+	virtual_flash {
+		compatible = "mtd-concat";
+
+		devices = <&fwconcat0 &fwconcat1>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "ubi";
+				reg = <0x0 0x0>;
+			};
+		};
+	};
 };
 
 &nand {
@@ -93,15 +110,20 @@
 			reg = <0x1c0000 0x800000>;
 		};
 
-		partition@9c0000 {
-			label = "ubi";
+		fwconcat0: partition@9c0000 {
+			label = "fwconcat0";
 			reg = <0x9c0000 0x2000000>;
 		};
 
 		partition@29c0000 {
-			label = "backup";
-			reg = <0x29c0000 0x3200000>;
+			label = "kernel2";
+			reg = <0x29c0000 0x800000>;
 			read-only;
+		};
+
+		fwconcat1: partition@31c0000 {
+			label = "fwconcat1";
+			reg = <0x31c0000 0x2a00000>;
 		};
 
 		partition@5bc0000 {
