@@ -566,7 +566,8 @@ define Device/dlink_covr-x1860-a1
   IMAGE/recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
 	append-ubi | check-size
   IMAGE/factory.bin := $$(IMAGE/recovery.bin) | \
-	append-dlink-covr-metadata $$(DEVICE_MODEL)
+	append-dlink-covr-metadata $$(DEVICE_MODEL) | \
+	dlink-sge-image $$(DEVICE_MODEL)
 endef
 TARGET_DEVICES += dlink_covr-x1860-a1
 
