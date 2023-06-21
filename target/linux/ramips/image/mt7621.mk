@@ -30,10 +30,6 @@ define Build/arcadyan-trx
 	rm $@.hsqs $@.tail
 endef
 
-define Build/dlink-covr-x-image
-	$(TOPDIR)/scripts/dlink-covr-x-image.py $@ $(1)
-endef
-
 define Build/gemtek-trailer
 	printf "%s%08X" ".GEMTEK." "$$(cksum $@ | cut -d ' ' -f1)" >> $@
 endef
@@ -570,7 +566,7 @@ define Device/dlink_covr-x1860-a1
   IMAGE/recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
 	append-ubi | check-size
   IMAGE/factory.bin := $$(IMAGE/recovery.bin) | \
-	append-dlink-covr-metadata $$(DEVICE_MODEL) | dlink-covr-x-image
+	append-dlink-covr-metadata $$(DEVICE_MODEL)
 endef
 TARGET_DEVICES += dlink_covr-x1860-a1
 
