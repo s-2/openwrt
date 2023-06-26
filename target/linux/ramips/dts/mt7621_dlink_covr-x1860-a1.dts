@@ -47,6 +47,7 @@
 		status_orange: status_orange {
 			label = "orange:status";
 			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+			default-state = "on";
 		};
 
 		status_red: status_red {
