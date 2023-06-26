@@ -565,13 +565,12 @@ define Device/dlink_covr-x1860-a1
   KERNEL := kernel-bin | relocate-kernel 0x80001000 | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
 	append-squashfs4-fakeroot
-  IMAGES += factory-recovery.bin factory-webflash.bin
+  IMAGES += factory.bin recovery.bin
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
-  IMAGE/factory-recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+  IMAGE/recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
 	append-ubi | check-size
-  IMAGE/factory-webflash.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
-	append-ubi | check-size | append-dlink-covr-metadata $$(DEVICE_MODEL) | \
-	dlink-covr-x-image
+  IMAGE/factory.bin := $$(IMAGE/recovery.bin) | \
+	append-dlink-covr-metadata $$(DEVICE_MODEL) | dlink-covr-x-image
 endef
 TARGET_DEVICES += dlink_covr-x1860-a1
 
