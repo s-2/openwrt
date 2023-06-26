@@ -12,7 +12,7 @@
 	aliases {
 		led-boot = &status_orange;
 		led-failsafe = &status_red;
-		led-running = &power_white;
+		led-running = &status_white;
 		led-upgrade = &status_red;
 	};
 
@@ -39,8 +39,8 @@
 	leds {
 		compatible = "gpio-leds";
 
-		power_white: power {
-			label = "white:power";
+		status_white: power {
+			label = "white:status";
 			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
 		};
 
