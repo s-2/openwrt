@@ -31,6 +31,11 @@ define Build/uboot-fit
 	@mv $@.new $@
 endef
 
+define Build/dwr978-header
+	$(TOPDIR)/scripts/dwr978-header.py $@ $@.new
+	mv $@.new $@
+endef
+
 define Build/mt7622-gpt
 	cp $@ $@.tmp 2>/dev/null || true
 	ptgen -g -o $@.tmp -a 1 -l 1024 \
@@ -142,6 +147,28 @@ define Device/buffalo_wsr-3200ax4s
   DEVICE_PACKAGES := kmod-mt7915-firmware
 endef
 TARGET_DEVICES += buffalo_wsr-3200ax4s
+
+define Device/dlink_dwr-978-a1
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DWR-978
+  DEVICE_VARIANT := A1
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_DTS := mt7622-dlink-dwr-978-a1
+  DEVICE_PACKAGES := kmod-btmtkuart kmod-mt7915-firmware kmod-usb3 \
+	kmod-usb-net-qmi-wwan kmod-usb-serial-qualcomm kmod-mhi-pci-generic \
+	kmod-mhi-wwan-ctrl swconfig
+  KERNEL_SIZE := 8192k
+  IMAGE_SIZE := 32180k
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  UBINIZE_OPTS := -E 5
+  IMAGES += factory.bin
+  IMAGE/sysupgrade.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | append-metadata
+  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | check-size | xor-image -p 29944A25120984C2 -x | dwr978-header
+endef
+TARGET_DEVICES += dlink_dwr-978-a1
 
 define Device/dlink_eagle-pro-ai-ax3200-a1
   IMAGE_SIZE := 46080k

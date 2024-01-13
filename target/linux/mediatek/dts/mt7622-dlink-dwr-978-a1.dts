@@ -1,0 +1,392 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+/dts-v1/;
+#include "mt7622.dtsi"
+#include "mt6380.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
+
+/ {
+	model = "D-Link DIR-978 A1";
+	compatible = "dlink,dwr-978-a1", "mediatek,mt7622";
+
+	aliases {
+		led-boot = &led_power;
+		led-failsafe = &led_power;
+		led-running = &led_power;
+		led-upgrade = &led_power;
+		serial0 = &uart0;
+		label-mac-device = &gmac0;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+		bootargs = "earlycon=uart8250,mmio32,0x11002000 console=ttyS0,115200n8 swiotlb=512";
+	};
+
+	cpus {
+		cpu@0 {
+			proc-supply = <&mt6380_vcpu_reg>;
+			sram-supply = <&mt6380_vm_reg>;
+		};
+
+		cpu@1 {
+			proc-supply = <&mt6380_vcpu_reg>;
+			sram-supply = <&mt6380_vm_reg>;
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		button-reset {
+			gpios = <&pio 102 GPIO_ACTIVE_LOW>;
+			label = "reset";
+			linux,code = <KEY_RESTART>;
+		};
+
+		button-wps {
+			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
+			label = "wps";
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+
+		/* no idea what could be the source, but it's defined in OEM firmware */
+/*
+		pwr_saving {
+			gpios = <&pio 18 GPIO_ACTIVE_LOW>;
+			label = "pwr_saving";
+		};
+*/
+	};
+
+	memory {
+		reg = <0 0x40000000 0 0x40000000>;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led-phone {
+			label = "white:phone";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 2 GPIO_ACTIVE_HIGH>;
+		};
+
+		led-wwan-5g {
+			label = "white:wwan-5g";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 3 GPIO_ACTIVE_LOW>;
+		};
+
+		led-wwan-4g {
+			label = "white:wwan-4g";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 4 GPIO_ACTIVE_LOW>;
+		};
+
+		led-lan {
+			color = <LED_COLOR_ID_WHITE>;
+			function = LED_FUNCTION_LAN;
+			gpios = <&pio 20 GPIO_ACTIVE_HIGH>;
+		};
+
+		led_power: led-power {
+			color = <LED_COLOR_ID_WHITE>;
+			function = LED_FUNCTION_POWER;
+			gpios = <&pio 22 GPIO_ACTIVE_HIGH>;
+		};
+
+		led-wan {
+			color = <LED_COLOR_ID_WHITE>;
+			function = LED_FUNCTION_WAN;
+			gpios = <&pio 62 GPIO_ACTIVE_HIGH>;
+		};
+
+		led-2g {
+			color = <LED_COLOR_ID_WHITE>;
+			function = LED_FUNCTION_WLAN;
+			gpios = <&pio 85 GPIO_ACTIVE_LOW>;
+		};
+
+		led-wwan-3g {
+			label = "white:wwan-3g";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 86 GPIO_ACTIVE_LOW>;
+		};
+
+		/* no idea what this does, there is no unpopulated LED on the board, maybe used for modem control? */
+/*
+		led-5g {
+			label = "white:5g";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 90 GPIO_ACTIVE_LOW>;
+		};
+*/
+
+		led-signal-1 {
+			label = "white:signal1";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 95 GPIO_ACTIVE_HIGH>;
+		};
+
+		led-signal-2 {
+			label = "white:signal2";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 96 GPIO_ACTIVE_HIGH>;
+		};
+
+		led-signal-3 {
+			label = "white:signal3";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 97 GPIO_ACTIVE_HIGH>;
+		};
+
+		led-signal-4 {
+			label = "white:signal4";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 98 GPIO_ACTIVE_HIGH>;
+		};
+
+		led-signal-5 {
+			label = "white:signal5";
+			color = <LED_COLOR_ID_WHITE>;
+			gpios = <&pio 99 GPIO_ACTIVE_HIGH>;
+		};
+	};
+
+	rtkgsw: rtkgsw@0 {
+		compatible = "mediatek,rtk-gsw";
+		mediatek,ethsys = <&ethsys>;
+		mediatek,mdio = <&mdio>;
+		mediatek,reset-pin = <&pio 54 0>;
+		status = "okay";
+	};
+};
+
+&bch {
+	status = "okay";
+};
+
+&eth {
+	pinctrl-names = "default";
+	pinctrl-0 = <&eth_pins>;
+	status = "okay";
+
+	gmac0: mac@0 {
+		compatible = "mediatek,eth-mac";
+		reg = <0>;
+
+		phy-connection-type = "2500base-x";
+/*
+		nvmem-cells = <&macaddr_factory_4 (-1)>;
+		nvmem-cell-names = "mac-address";
+*/
+		fixed-link {
+			speed = <2500>;
+			full-duplex;
+			pause;
+		};
+	};
+/*
+	gmac1: mac@1 {
+		compatible = "mediatek,eth-mac";
+		phy-mode = "rgmii";
+		reg = <1>;
+
+		fixed-link {
+			speed = <1000>;
+			full-duplex;
+			pause;
+		};
+	};
+*/
+	mdio: mdio-bus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+};
+
+&pcie0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pcie0_pins>;
+	status = "okay";
+};
+
+&pcie1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pcie1_pins>;
+	status = "okay";
+};
+
+&pio {
+	eth_pins: eth-pins {
+		mux {
+			function = "eth";
+			groups = "mdc_mdio", "rgmii_via_gmac2";
+		};
+	};
+
+	pcie0_pins: pcie0-pins {
+		mux {
+			function = "pcie";
+			groups = "pcie0_pad_perst",
+				 "pcie0_1_waken",
+				 "pcie0_1_clkreq";
+		};
+	};
+
+	pcie1_pins: pcie1-pins {
+		mux {
+			function = "pcie";
+			groups = "pcie1_pad_perst",
+				 "pcie1_0_waken",
+				 "pcie1_0_clkreq";
+		};
+	};
+
+	pmic_bus_pins: pmic-bus-pins {
+		mux {
+			function = "pmic";
+			groups = "pmic_bus";
+		};
+	};
+
+	/* Serial NAND is shared pin with SPI-NOR */
+	serial_nand_pins: serial-nand-pins {
+		mux {
+			function = "flash";
+			groups = "snfi";
+		};
+	};
+
+	uart0_pins: uart0-pins {
+		mux {
+			function = "uart";
+			groups = "uart0_0_tx_rx";
+		};
+	};
+
+	watchdog_pins: watchdog-pins {
+		mux {
+			function = "watchdog";
+			groups = "watchdog";
+		};
+	};
+};
+
+&pwrap {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pmic_bus_pins>;
+	status = "okay";
+};
+
+&rtc {
+	status = "disabled";
+};
+
+&sata {
+	status = "disabled";
+};
+
+&sata_phy {
+	status = "disabled";
+};
+
+&slot1 {
+	mt7615@0,0 {
+		reg = <0x0000 0 0 0 0>;
+		ieee80211-freq-limit = <5000000 6000000>;
+		mediatek,mtd-eeprom = <&factory 0x05000>;
+	};
+};
+
+&snfi {
+	pinctrl-names = "default";
+	pinctrl-0 = <&serial_nand_pins>;
+	status = "okay";
+
+	snand: flash@0 {
+		compatible = "spi-nand";
+		mediatek,bmt-table-size = <0x1000>;
+		mediatek,bmt-v2;
+		nand-ecc-engine = <&snfi>;
+		reg = <0>;
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "preloader";
+				reg = <0x00000000 0x00080000>;
+				read-only;
+			};
+
+			partition@80000 {
+				label = "atf";
+				reg = <0x00080000 0x00040000>;
+				read-only;
+			};
+
+			partition@C0000 {
+				label = "bootloader";
+				reg = <0x000C0000 0x00080000>;
+				read-only;
+			};
+
+			partition@140000 {
+				label = "config";
+				reg = <0x00140000 0x00080000>;
+				read-only;
+			};
+
+			factory: partition@1c0000 {
+				label = "factory";
+				reg = <0x1c0000 0x40000>;
+				read-only;
+			};
+
+			partition@200000 {
+				label = "firmware";
+				reg = <0x200000 0x2000000>;
+				compatible = "denx,fit";
+			};
+
+			partition@2200000 {
+				label = "user_data";
+				reg = <0x2200000 0x4000000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&ssusb {
+	status = "ok";
+};
+
+&u3phy {
+	status = "ok";
+};
+
+&uart0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart0_pins>;
+	status = "okay";
+};
+
+&watchdog {
+	pinctrl-names = "default";
+	pinctrl-0 = <&watchdog_pins>;
+	status = "okay";
+};
+
+&wmac {
+	mediatek,mtd-eeprom = <&factory 0x0000>;
+	status = "okay";
+};
