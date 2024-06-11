@@ -2,6 +2,42 @@ ifneq ($(KERNEL),6.1)
 DTS_DIR := $(DTS_DIR)/mediatek
 endif
 
+DEVICE_VARS += DLINK_SIGNATURE
+
+define Build/dlink-cameo-encrypt
+	$(eval model=$(word 1,$(1)))
+	$(eval signature=$(word 2,$(1)))
+	openssl aes-256-cbc -md md5 -in $@ -out $@_enc -k $$(echo -n $(model) | \
+		openssl dgst -sha1 -hmac $(signature) | cut -d ' ' -f 2)
+	mv $@_enc $@
+endef
+
+define Build/dlink-cameo-header
+	$(eval model=$(word 1,$(1)))
+	$(eval signature=$(word 2,$(1)))
+	( \
+		echo -ne "\x64\x80\x19\x40" | \
+			dd bs=4 count=1 conv=sync; \
+		echo -ne "$(model)" | \
+			dd bs=32 count=1 conv=sync; \
+		echo -ne "$(signature)" | \
+			dd bs=32 count=1 conv=sync; \
+		echo -ne "\x01" | \
+			dd bs=4 count=1 conv=sync; \
+		echo -ne "$$(printf '%08x' $$(($$(stat -c%s $@) + 8)) | fold -s2 | xargs -I {} echo \\x{} | tac | tr -d '\n')" | \
+			dd bs=4 count=1 conv=sync; \
+		echo -ne "\x00" | \
+			dd bs=32 count=1 conv=sync; \
+		echo -ne "\x01" | \
+			dd bs=4 count=1 conv=sync; \
+		echo -ne "$$(printf '%08x' $$(stat -c%s $@) | fold -s2 | xargs -I {} echo \\x{} | tac | tr -d '\n')" | \
+			dd bs=4 count=1 conv=sync; \
+	) > $@.header
+	cat $@.header $@ > $@.new
+	mv $@.new $@
+	rm $@.header
+endef
+
 define Device/mediatek_mt7629-rfb
   DEVICE_VENDOR := MediaTek
   DEVICE_MODEL := MT7629 rfb AP
@@ -12,7 +48,9 @@ TARGET_DEVICES += mediatek_mt7629-rfb
 
 define Device/dlink_dir-1950-a1
   DEVICE_VENDOR := D-Link
-  DEVICE_MODEL := DIR-1950 A1
+  DEVICE_MODEL := DIR-1950
+  DEVICE_VARIANT := A1
+  DLINK_SIGNATURE := MT7629B_DIR-1950-S1-1904
   DEVICE_DTS := mt7629-dlink-dir-1950-a1
   DEVICE_DTS_DIR := ../dts
   UBINIZE_OPTS := -E 5
@@ -20,10 +58,13 @@ define Device/dlink_dir-1950-a1
   PAGESIZE := 2048
   KERNEL := $$(KERNEL) | pad-offset 128k 2048
   KERNEL_INITRAMFS := $$(KERNEL_INITRAMFS) | pad-to 128k
-  IMAGES += recovery.bin
+  IMAGES += recovery.bin factory.bin
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/recovery.bin := append-kernel | pad-to 128k | append-ubi | \
 	append-metadata
+  IMAGE/factory.bin := $$(IMAGE/recovery.bin) | \
+	dlink-cameo-encrypt $$(DEVICE_MODEL) $$(DLINK_SIGNATURE) | \
+	dlink-cameo-header $$(DEVICE_MODEL) $$(DLINK_SIGNATURE)
 endef
 TARGET_DEVICES += dlink_dir-1950-a1
 
