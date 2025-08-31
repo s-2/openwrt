@@ -456,9 +456,141 @@
 		reg = <0>;
 		#address-cells = <1>;
 		#size-cells = <1>;
+
 		nand-ecc-engine = <&qpic_nand>;
 		nand-ecc-strength = <4>;
 		nand-ecc-step-size = <512>;
+
+		partitions {
+			compatible = "qcom,smem-part";
+		};
+/*
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "0:SBL1";
+				reg = <0x0 0x180000>;
+				read-only;
+			};
+
+			partition@180000 {
+				label = "0:MIBIB";
+				reg = <0x180000 0x100000>;
+				read-only;
+			};
+
+			partition@280000 {
+				label = "0:BOOTCONFIG";
+				reg = <0x280000 0x80000>;
+				read-only;
+			};
+
+			partition@300000 {
+				label = "0:BOOTCONFIG1";
+				reg = <0x300000 0x80000>;
+				read-only;
+			};
+
+			partition@380000 {
+				label = "0:QSEE";
+				reg = <0x380000 0x380000>;
+				read-only;
+			};
+
+			partition@700000 {
+				label = "0:DEVCFG";
+				reg = <0x700000 0x80000>;
+				read-only;
+			};
+
+			partition@780000 {
+				label = "0:APDP";
+				reg = <0x780000 0x80000>;
+				read-only;
+			};
+
+			partition@800000 {
+				label = "0:TME";
+				reg = <0x800000 0x80000>;
+				read-only;
+			};
+
+			partition@880000 {
+				label = "0:RPM";
+				reg = <0x880000 0x80000>;
+				read-only;
+			};
+
+			partition@900000 {
+				label = "0:CDT";
+				reg = <0x900000 0x80000>;
+				read-only;
+			};
+
+			partition@980000 {
+				label = "0:APPSBLENV";
+				reg = <0x980000 0x80000>;
+				read-only;
+			};
+
+			partition@a00000 {
+				label = "0:APPSBL";
+				reg = <0xa00000 0x180000>;
+				read-only;
+			};
+
+			partition@b80000 {
+				label = "0:ART";
+				reg = <0xb80000 0x200000>;
+				read-only;
+			};
+
+			partition@d80000 {
+				label = "0:ETHPHYFW";
+				reg = <0xd80000 0x100000>;
+				read-only;
+			};
+
+			partition@e80000 {
+				label = "0:LICENSE";
+				reg = <0xe80000 0x40000>;
+				read-only;
+			};
+
+			partition@ec0000 {
+				label = "secure-binary";
+				reg = <0xec0000 0x80000>;
+				read-only;
+			};
+
+			partition@f40000 {
+				label = "rootfs";
+				reg = <0xf40000 0x5f00000>;
+				read-only;
+			};
+
+			partition@6e40000 {
+				label = "rootfs_1";
+				reg = <0x6e40000 0x5f00000>;
+				read-only;
+			};
+
+			partition@cd40000 {
+				label = "tp_data";
+				reg = <0xcd40000 0x1440000>;
+				read-only;
+			};
+
+			partition@e180000 {
+				label = "data";
+				reg = <0xe180000 0x80000>;
+				read-only;
+			};
+		};
+*/		
 	};
 };
 
