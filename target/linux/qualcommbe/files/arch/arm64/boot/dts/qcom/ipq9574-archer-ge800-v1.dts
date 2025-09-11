@@ -192,7 +192,7 @@
 &pcie1_phy {
 	status = "okay";
 };
-
+/*
 &pcie2 {
 	pinctrl-0 = <&pcie2_default>;
 	pinctrl-names = "default";
@@ -205,7 +205,8 @@
 &pcie2_phy {
 	status = "okay";
 };
-
+*/
+/*
 &pcie3 {
 	pinctrl-0 = <&pcie3_default>;
 	pinctrl-names = "default";
@@ -218,13 +219,14 @@
 &pcie3_phy {
 	status = "okay";
 };
-
+*/
+/*
 &blsp1_uart2 {
 	pinctrl-0 = <&uart2_pins>;
 	pinctrl-names = "default";
 	status = "okay";
 };
-
+*/
 &rpm_requests {
 	regulators {
 		compatible = "qcom,rpm-mp5496-regulators";
