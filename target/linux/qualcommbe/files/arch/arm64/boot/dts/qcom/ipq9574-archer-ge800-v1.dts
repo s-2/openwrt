@@ -231,6 +231,12 @@
 	regulators {
 		compatible = "qcom,rpm-mp5496-regulators";
 
+		dummy_vdd: regulator-dummy {
+			compatible = "regulator-fixed";
+			regulator-name = "dummy-vdd";
+			regulator-always-on;
+		};
+
 		ipq9574_s1: s1 {
 		/*
 		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
@@ -242,14 +248,16 @@
 		 */
 			regulator-min-microvolt = <725000>;
 			regulator-max-microvolt = <1075000>;
+			vdd-supply = <&dummy_vdd>;  // Prevents circular reference
 		};
-
+/*
 		mp5496_l5: l5 {
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1800000>;
 			regulator-always-on;
 			regulator-boot-on;
 		};
+*/
 	};
 };
 
@@ -557,17 +565,19 @@
 };
 
 &usb_0_qmpphy {
+/*
 	vdda-pll-supply = <&mp5496_l5>;
 	vdda-phy-supply = <&regulator_fixed_0p925>;
-
+*/
 	status = "okay";
 };
 
 &usb_0_qusbphy {
+/*
 	vdd-supply = <&regulator_fixed_0p925>;
 	vdda-pll-supply = <&mp5496_l5>;
 	vdda-phy-dpdm-supply = <&regulator_fixed_3p3>;
-
+*/
 	status = "okay";
 };
 
