@@ -33,8 +33,8 @@ define Device/tplink_archer-ge800-v1
 	BOARD_NAME := ap-al02.1-c4
 	DEVICE_DTS_CONFIG := config@ge800
 	SOC := ipq9574
-	DEVICE_PACKAGES := kmod-ath12k ath12k-firmware-qcn9274 ipq-wifi-8devices_kiwi f2fsck mkf2fs kmod-sfp kmod-phy-aquantia
 	IMAGE_SIZE := 25344k
+	DEVICE_PACKAGES := kmod-ath12k ath12k-firmware-qcn9274 ipq-wifi-8devices_kiwi f2fsck mkf2fs kmod-sfp kmod-phy-aquantia kmod-usb-net-asix-ax88179
 	IMAGE/sysupgrade.bin := append-kernel | pad-to 64k | append-rootfs | pad-rootfs | check-size | append-metadata
 endef
 TARGET_DEVICES += tplink_archer-ge800-v1
