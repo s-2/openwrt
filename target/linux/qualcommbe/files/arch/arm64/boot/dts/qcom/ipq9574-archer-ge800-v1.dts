@@ -444,10 +444,11 @@
 		nand-ecc-strength = <4>;
 		nand-ecc-step-size = <512>;
 
+/*
 		partitions {
 			compatible = "qcom,smem-part";
 		};
-/*
+*/
 		partitions {
 			compatible = "fixed-partitions";
 			#address-cells = <1>;
@@ -552,6 +553,7 @@
 			partition@f40000 {
 				label = "rootfs";
 				reg = <0xf40000 0x5f00000>;
+				compatible = "linux,ubi";
 				read-only;
 			};
 
@@ -573,7 +575,6 @@
 				read-only;
 			};
 		};
-*/		
 	};
 };
 
