@@ -444,11 +444,10 @@
 		nand-ecc-strength = <4>;
 		nand-ecc-step-size = <512>;
 
-/*
 		partitions {
 			compatible = "qcom,smem-part";
 		};
-*/
+/*
 		partitions {
 			compatible = "fixed-partitions";
 			#address-cells = <1>;
@@ -575,6 +574,7 @@
 				read-only;
 			};
 		};
+*/
 	};
 };
 
