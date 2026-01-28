@@ -110,7 +110,10 @@ define Device/dlink_dsp-w215-b1
   DEVICE_VARIANT := B1
   IMAGE_SIZE := 5440k
   DEVICE_PACKAGES := -kmod-mdio -kmod-mii -luci-proto-ppp -ppp \
-	-ppp-mod-pppoe -swconfig coreutils-stty
+	-ppp-mod-pppoe -swconfig -firewall4 -iptables-nft -nftables \
+	-dnsmasq -odhcpd-ipv6only -odhcp6c -kmod-nf-flow -kmod-nf-conntrack \
+	-kmod-nf-nat -rpcd -logd -ip6tables -kmod-ipv6 -kmod-ip6tables \
+	-iptables -opkg coreutils-stty
   IMAGES += factory.bin
   IMAGE/factory.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
 	append-rootfs | pad-rootfs | check-size | mkdapimg2 0x000E0000
