@@ -7,12 +7,19 @@ include ./common-tp-link.mk
 
 DEFAULT_SOC := mt7621
 
-DEVICE_VARS += BUFFALO_TRX_MAGIC ELECOM_HWNAME LINKSYS_HWNAME DLINK_HWID
+DEVICE_VARS += BUFFALO_TRX_MAGIC ELECOM_HWNAME LINKSYS_HWNAME DLINK_HWID ALPHA_KEY_IV
 
 define Image/Prepare
 	# For UBI we want only one extra block
 	rm -f $(KDIR)/ubi_mark
 	echo -ne '\xde\xad\xc0\xde' > $(KDIR)/ubi_mark
+endef
+
+define Build/append-alpha-metadata
+	echo -ne '{"supported_devices":["mt7621-rfb-ax-nand"], \
+		"alpha": { "fw_sign": "$(SEAMA_SIGNATURE)" } }"' > $@metadata.tmp
+	fwtool -I $@metadata.tmp $@
+	rm $@metadata.tmp
 endef
 
 define Build/append-dlink-covr-metadata
@@ -866,7 +873,7 @@ define Device/dlink_covr-x1860-a1
   DEVICE_VARIANT := A1
   DEVICE_PACKAGES := kmod-mt7915-firmware
   UBINIZE_OPTS := -E 5
-  KERNEL_LOADADDR := 0x82000000
+  KERNEL_LOADADDR := 0x81000000
   KERNEL := kernel-bin | relocate-kernel $(loadaddr-y) | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
 	append-squashfs4-fakeroot
@@ -1122,6 +1129,30 @@ define Device/dlink_dir-882-r1
 	ab0dff19af8842cdb70a86b4b68d23f7
 endef
 TARGET_DEVICES += dlink_dir-882-r1
+
+define Device/dlink_dir-x1860-a1
+  $(Device/dsa-migration)
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DIR-X1860
+  DEVICE_VARIANT := A1
+  DEVICE_DTS_CONFIG := config@1
+  DEVICE_PACKAGES := kmod-mt7915-firmware uboot-envtools
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  KERNEL_SIZE := 8192k
+  UBINIZE_OPTS := -E 5
+  KERNEL_LOADADDR := 0x82000000
+  KERNEL := kernel-bin | relocate-kernel $(loadaddr-y) | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  IMAGES += factory.bin recovery.bin
+  IMAGE_SIZE := 40960k
+  IMAGE/recovery.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
+	check-size | append-alpha-metadata
+  SEAMA_SIGNATURE := wrgax10_dlink_dirx1860
+  ALPHA_KEY_IV := 9I92bgRMPu+0fgFzo/ZwCyuBTNrtpeQ7 tTc4XS3LiRBq+Muv
+  IMAGE/factory.bin := $$(IMAGE/recovery.bin) | alpha_encimg
+endef
+TARGET_DEVICES += dlink_dir-x1860-a1
 
 define Device/dlink_dir-x1860-b1
   $(Device/nand)
