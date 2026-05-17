@@ -138,6 +138,19 @@ define Device/compex_wpq873
 endef
 TARGET_DEVICES += compex_wpq873
 
+define Device/dlink_dap-x2850-a1
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := D-Link
+	DEVICE_MODEL := DAP-X2850
+	DEVICE_VARIANT := A1
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	DEVICE_DTS_CONFIG := config@rt5010w-d350-rev0
+	SOC := ipq8072
+endef
+TARGET_DEVICES += dlink_dap-x2850-a1
+
 define Device/dynalink_dl-wrx36
 	$(call Device/FitImage)
 	$(call Device/UbiFit)
