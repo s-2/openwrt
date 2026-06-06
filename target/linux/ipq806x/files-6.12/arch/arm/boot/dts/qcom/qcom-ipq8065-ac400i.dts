@@ -197,10 +197,6 @@
 
 &pcie0 {
 	status = "okay";
-
-	/delete-property/ pinctrl-0;
-	/delete-property/ pinctrl-names;
-	/delete-property/ perst-gpios;
 };
 
 &pcie_bridge0 {
@@ -213,10 +209,6 @@
 
 &pcie1 {
 	status = "okay";
-
-	/delete-property/ pinctrl-0;
-	/delete-property/ pinctrl-names;
-	/delete-property/ perst-gpios;
 };
 
 &pcie_bridge1 {
