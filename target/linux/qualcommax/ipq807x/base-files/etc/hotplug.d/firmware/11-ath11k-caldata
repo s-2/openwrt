@@ -24,6 +24,7 @@ case "$FIRMWARE" in
 	buffalo,wxr-5950ax12|\
 	cmcc,rm2-6|\
 	compex,wpq873|\
+	dlink,dap-x2850-a1|\
 	dynalink,dl-wrx36|\
 	edgecore,eap102|\
 	edimax,cax1800|\

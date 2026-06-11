@@ -44,6 +44,9 @@ ipq807x_setup_interfaces()
 	xiaomi,ax3600)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3" "wan"
 		;;
+	dlink,dap-x2850-a1)
+		ucidef_set_interfaces_lan_wan "lan-poe" "lan"
+		;;
 	edimax,cax1800)
 		ucidef_set_interfaces_lan_wan "lan"
 		;;

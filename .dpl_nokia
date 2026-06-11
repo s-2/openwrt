@@ -1,0 +1,1 @@
+cp /home/sebastian/openwrt/openwrt/bin/targets/ipq806x/generic/openwrt-ipq806x-generic-nokia_ac400i-initramfs-fit-uImage.itb /var/lib/tftpboot/C0A8BCFB.img

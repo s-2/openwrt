@@ -100,12 +100,128 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 		reg = <0x00>;
-		/* "n25q128a11" required for u-boot patching, see nand node */
-		compatible = "n25q128a11", "jedec,spi-nor";
+
+		compatible = "jedec,spi-nor";
 		spi-max-frequency = <50000000>;
 
 		partitions {
 			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "0:sbl1";
+				reg = <0x0 0x50000>;
+				read-only;
+			};
+
+			partition@50000 {
+				label = "0:mibib";
+				reg = <0x50000 0x10000>;
+				read-only;
+			};
+
+			partition@60000 {
+				label = "0:bootconfig";
+				reg = <0x60000 0x20000>;
+				read-only;
+			};
+
+			partition@80000 {
+				label = "0:bootconfig1";
+				reg = <0x80000 0x20000>;
+				read-only;
+			};
+
+			partition@a0000 {
+				label = "0:qsee";
+				reg = <0xa0000 0x180000>;
+				read-only;
+			};
+
+			partition@220000 {
+				label = "0:qsee_1";
+				reg = <0x220000 0x180000>;
+				read-only;
+			};
+
+			partition@3a0000 {
+				label = "0:devcfg";
+				reg = <0x3a0000 0x10000>;
+				read-only;
+			};
+
+			partition@3b0000 {
+				label = "0:devcfg_1";
+				reg = <0x3b0000 0x10000>;
+				read-only;
+			};
+
+			partition@3c0000 {
+				label = "0:apdp";
+				reg = <0x3c0000 0x10000>;
+				read-only;
+			};
+
+			partition@3d0000 {
+				label = "0:apdp_1";
+				reg = <0x3d0000 0x10000>;
+				read-only;
+			};
+
+			partition@3e0000 {
+				label = "0:rpm";
+				reg = <0x3e0000 0x40000>;
+				read-only;
+			};
+
+			partition@420000 {
+				label = "0:rpm_1";
+				reg = <0x420000 0x40000>;
+				read-only;
+			};
+
+			partition@460000 {
+				label = "0:cdt";
+				reg = <0x460000 0x10000>;
+				read-only;
+			};
+
+			partition@470000 {
+				label = "0:cdt_1";
+				reg = <0x470000 0x10000>;
+				read-only;
+			};
+
+			partition@480000 {
+				label = "0:appsblenv";
+				reg = <0x480000 0x10000>;
+				read-only;
+			};
+
+			partition@490000 {
+				label = "0:appsbl";
+				reg = <0x490000 0xa0000>;
+				read-only;
+			};
+
+			partition@530000 {
+				label = "0:appsbl_1";
+				reg = <0x530000 0xa0000>;
+				read-only;
+			};
+
+			partition@5d0000 {
+				label = "0:art";
+				reg = <0x5d0000 0x40000>;
+				read-only;
+			};
+
+			partition@610000 {
+				label = "0:ethphyfw";
+				reg = <0x610000 0x80000>;
+				read-only;
+			};
 		};
 	};
 };
@@ -113,42 +229,73 @@
 &qpic_nand {
 	status = "okay";
 
-	/*
-	 * Bootloader will find the NAND DT node by the compatible and
-	 * then "fixup" it by adding the partitions from the SMEM table
-	 * using the legacy bindings thus making it impossible for us
-	 * to change the partition table or utilize NVMEM for calibration.
-	 * So add a dummy partitions node that bootloader will populate
-	 * and set it as disabled so the kernel ignores it instead of
-	 * printing warnings due to the broken way bootloader adds the
-	 * partitions.
-	 */
-	partitions {
-		status = "disabled";
-	};
-
 	nand@0 {
 		reg = <0>;
-		nand-ecc-strength = <8>;
+		nand-ecc-strength = <4>;
 		nand-ecc-step-size = <512>;
 		nand-bus-width = <8>;
 
 		partitions {
-			compatible = "qcom,smem-part";
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "rootfs_1";
+				reg = <0x0 0x2d00000>;
+				compatible = "linux,ubi";
+			};
+
+			partition@2d00000 {
+				label = "0:wififw_1";
+				reg = <0x2d00000 0x800000>;
+				compatible = "linux,ubi";
+				read-only;
+			};
+
+			partition@3500000 {
+				label = "rootfs";
+				reg = <0x3500000 0x2d00000>;
+				read-only;
+			};
+
+			partition@6200000 {
+				label = "0:wififw";
+				reg = <0x6200000 0x800000>;
+				read-only;
+			};
+
+			partition@6a00000 {
+				label = "bdcfg";
+				reg = <0x6a00000 0x80000>;
+				read-only;
+			};
+
+			partition@6a80000 {
+				label = "rgdb";
+				reg = <0x6a80000 0x200000>;
+				read-only;
+			};
+
+			partition@6c80000 {
+				label = "langpack";
+				reg = <0x6c80000 0x200000>;
+				read-only;
+			};
+
+			partition@6e80000 {
+				label = "certificate";
+				reg = <0x6e80000 0x100000>;
+				read-only;
+			};
+
+			partition@6f80000 {
+				label = "captival";
+				reg = <0x6f80000 0x100000>;
+				read-only;
+			};
 		};
 	};
-};
-
-&qusb_phy_0 {
-	status = "okay";
-};
-
-&ssphy_0 {
-	status = "okay";
-};
-
-&usb_0 {
-	status = "okay";
 };
 
 &mdio {
@@ -253,44 +400,11 @@
 	status = "okay";
 };
 
-&dp1 {
-	status = "okay";
-	phy-mode = "qsgmii";
-	phy-handle = <&qca8075_0>;
-	label = "lan4";
-/*
-	nvmem-cells = <&macaddr_art_18>;
-	nvmem-cell-names = "mac-address";
-*/
-};
-
-&dp2 {
-	status = "okay";
-	phy-mode = "qsgmii";
-	phy-handle = <&qca8075_1>;
-	label = "lan3";
-/*
-	nvmem-cells = <&macaddr_art_12>;
-	nvmem-cell-names = "mac-address";
-*/
-};
-
-&dp3 {
-	status = "okay";
-	phy-mode = "qsgmii";
-	phy-handle = <&qca8075_2>;
-	label = "lan2";
-/*
-	nvmem-cells = <&macaddr_art_c>;
-	nvmem-cell-names = "mac-address";
-*/
-};
-
 &dp4 {
 	status = "okay";
 	phy-mode = "qsgmii";
 	phy-handle = <&qca8075_3>;
-	label = "lan1";
+	label = "lan";
 /*
 	nvmem-cells = <&macaddr_art_6>;
 	nvmem-cell-names = "mac-address";
@@ -300,7 +414,7 @@
 &dp6_syn {
 	status = "okay";
 	phy-handle = <&qca8081>;
-	label = "wan";
+	label = "lan-poe";
 /*
 	nvmem-cells = <&macaddr_art_0>;
 	nvmem-cell-names = "mac-address";
@@ -309,5 +423,5 @@
 
 &wifi {
 	status = "okay";
-	qcom,ath11k-calibration-variant = "D-Link DAP-X2850 A1";
+	qcom,ath11k-calibration-variant = "dlink_dap-x2850-a1";
 };
