@@ -202,6 +202,10 @@ platform_do_upgrade() {
 		nand_do_restore_config || nand_do_upgrade_failed
 		buffalo_upgrade_optvol
 		;;
+	dlink,dap-x2850-a1)
+		CI_UBIPART="rootfs_1"
+		nand_do_upgrade "$1"
+		;;
 	edgecore,eap102)
 		active="$(fw_printenv -n active)"
 		if [ "$active" -eq "1" ]; then

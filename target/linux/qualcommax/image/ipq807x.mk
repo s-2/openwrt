@@ -146,7 +146,7 @@ define Device/dlink_dap-x2850-a1
 	DEVICE_VARIANT := A1
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
-	DEVICE_DTS_CONFIG := config@rt5010w-d350-rev0
+	DEVICE_DTS_CONFIG := config@hk01
 	SOC := ipq8072
 endef
 TARGET_DEVICES += dlink_dap-x2850-a1
