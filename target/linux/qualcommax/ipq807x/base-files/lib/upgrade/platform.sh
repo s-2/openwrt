@@ -203,7 +203,7 @@ platform_do_upgrade() {
 		buffalo_upgrade_optvol
 		;;
 	dlink,dap-x2850-a1)
-		CI_UBIPART="rootfs_1"
+		CI_UBIPART="rootfs"
 		nand_do_upgrade "$1"
 		;;
 	edgecore,eap102)

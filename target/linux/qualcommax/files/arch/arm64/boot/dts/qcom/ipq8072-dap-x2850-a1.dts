@@ -24,9 +24,7 @@
 
 	chosen {
 		stdout-path = "serial0:115200n8";
-/*
-		bootargs-append = " root=/dev/ubiblock0_1";
-*/
+		bootargs-append = " root=/dev/ubiblock0_2";
 	};
 
 	keys {
@@ -280,7 +278,7 @@
 			partition@3500000 {
 				label = "rootfs";
 				reg = <0x3500000 0x2d00000>;
-				read-only;
+				compatible = "linux,ubi";
 			};
 
 			partition@6200000 {
@@ -363,7 +361,7 @@
 		reg = <28>;
 		reset-deassert-us = <10000>;
 		reset-gpios = <&tlmm 44 GPIO_ACTIVE_LOW>;
-/*
+/* todo: reset-gpios?
 		leds {
 			#address-cells = <1>;
 			#size-cells = <0>;
