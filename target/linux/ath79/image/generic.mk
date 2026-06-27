@@ -1186,6 +1186,17 @@ define Device/dlink_dap-3662-a1
 endef
 TARGET_DEVICES += dlink_dap-3662-a1
 
+define Device/dlink_dap-3666-a1
+  SOC := qca9563
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DAP-3666
+  DEVICE_VARIANT := A1
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct
+  IMAGE_SIZE := 13440k
+  ELX_MODEL := 011B_0055
+endef
+TARGET_DEVICES += dlink_dap-3666-a1
+
 define Device/dlink_dch-g020-a1
   SOC := qca9531
   DEVICE_VENDOR := D-Link
