@@ -89,8 +89,6 @@ netgear,xr500)
 	ucidef_set_led_ide "esata" "eSATA" "white:esata"
 	;;
 nokia,ac400i)
-	ucidef_set_led_wlan "wlan5g" "5G" "green:wlan5g" "wlan0"
-	ucidef_set_led_wlan "wlan2g" "2.4G" "green:wlan2g" "wlan1"
 	ucidef_set_led_netdev "eth1" "ETH1" "green:eth1" "eth0"
 	ucidef_set_led_netdev "eth2" "ETH2" "green:eth2" "eth1"
 	ucidef_set_led_default "ctrl" "CTRL" "green:ctrl" "0"

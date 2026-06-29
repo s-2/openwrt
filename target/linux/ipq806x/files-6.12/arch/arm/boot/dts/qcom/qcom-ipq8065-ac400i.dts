@@ -61,6 +61,7 @@
 		5g_green {
 			label = "green:5g";
 			gpios = <&qcom_pinmux 64 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "phy0tpt";
 		};
 
 		2g_red {
@@ -71,6 +72,7 @@
 		2g_green {
 			label = "green:2g";
 			gpios = <&qcom_pinmux 54 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "phy1tpt";
 		};
 
 		eth1_red {
