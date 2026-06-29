@@ -457,7 +457,8 @@ define Device/nokia_ac400i
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	BOARD_NAME := ac400i
-	DEVICE_PACKAGES := ath10k-firmware-qca9984-ct kmod-hwmon-lm75
+	DEVICE_PACKAGES := ath10k-firmware-qca9984-ct kmod-hwmon-lm75 \
+		kmod-ramoops
 endef
 TARGET_DEVICES += nokia_ac400i
 

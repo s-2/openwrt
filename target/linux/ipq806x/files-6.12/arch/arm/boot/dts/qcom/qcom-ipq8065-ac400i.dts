@@ -7,6 +7,20 @@
 	model = "Nokia AC400i";
 	compatible = "nokia,ac400i", "qcom,ipq8065", "qcom,ipq8064";
 
+	reserved-memory {
+		ramoops@5fb00000 {
+			compatible = "ramoops";
+			reg = <0x5fb00000 0x100000>;
+
+			record-size = <0x10000>;
+			console-size = <0x10000>;
+			pmsg-size = <0x10000>;
+			ftrace-size = <0x10000>;
+
+			ecc-size = <0x0>;
+		};
+	};
+
 	aliases {
 		mdio-gpio0 = &mdio0;
 		ethernet0 = &gmac0;
