@@ -1,0 +1,4 @@
+config controller 'http'
+    option url 'https://openwisp.fritz.box'
+    option shared_secret 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    option verify_ssl '0'

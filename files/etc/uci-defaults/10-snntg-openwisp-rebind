@@ -1,0 +1,8 @@
+uci -q batch << EOI
+del dhcp.lan.ra_slaac
+set dhcp.lan.ra_preference='medium'
+del network.lan.ipaddr
+del network.lan.ip6assign
+set network.lan.proto='dhcp'
+add_list dhcp.@dnsmasq[0].rebind_domain='openwisp.fritz.box'
+EOI
