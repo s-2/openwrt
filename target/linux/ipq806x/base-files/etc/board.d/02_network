@@ -86,6 +86,16 @@ ipq806x_setup_macs()
 		hw_mac_addr=$(mtd_get_mac_ascii hwconfig HW.WAN.MAC.Address)
 		ucidef_set_interface_macaddr "wan" "$(macaddr_add $hw_mac_addr 1)"
 		;;
+	nokia,ac400i)
+		mac=$(mtd_get_mac_binary "0:eid-a" 0x2c6)
+		# Remove colons → "aabbccddeeff"
+		raw=${mac//:/}
+		# Split into bytes and reverse
+		rev=$(echo "$raw" | sed 's/../& /g' | awk '{for(i=NF;i>0;i--) printf "%s", $i}')
+		# Reinsert colons
+		rev_mac=$(echo "$rev" | sed 's/\(..\)/\1:/g;s/:$//')
+		ucidef_set_interface_macaddr "lan" "$rev_mac"
+		;;
 	linksys,e8350-v1|\
 	zyxel,nbg6817)
 		hw_mac_addr=$(mtd_get_mac_ascii 0:appsblenv ethaddr)

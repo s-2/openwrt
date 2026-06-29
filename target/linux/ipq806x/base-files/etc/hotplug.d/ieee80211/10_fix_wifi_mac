@@ -17,6 +17,17 @@ case "$board" in
 		[ "$PHYNBR" = "0" ] && echo $(mtd_get_mac_ascii CFG1 RADIOADDR0) > /sys${DEVPATH}/macaddress
 		[ "$PHYNBR" = "1" ] && echo $(mtd_get_mac_ascii CFG1 RADIOADDR1) > /sys${DEVPATH}/macaddress
 		;;
+	nokia,ac400i)
+		mac=$(mtd_get_mac_binary "0:eid-a" 0x2c6)
+		# Remove colons → "aabbccddeeff"
+		raw=${mac//:/}
+		# Split into bytes and reverse
+		rev=$(echo "$raw" | sed 's/../& /g' | awk '{for(i=NF;i>0;i--) printf "%s", $i}')
+		# Reinsert colons
+		rev_mac=$(echo "$rev" | sed 's/\(..\)/\1:/g;s/:$//')
+		[ "$PHYNBR" = "0" ] && echo $(macaddr_add $rev_mac 8) > /sys${DEVPATH}/macaddress
+		[ "$PHYNBR" = "1" ] && echo $rev_mac > /sys${DEVPATH}/macaddress
+		;;
 esac
 
 OPATH=${DEVPATH##/devices/platform/}
